@@ -1,0 +1,2135 @@
+
+<!DOCTYPE html>
+<html lang="en" data-theme="dark">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1.0" />
+<title>DSA Master – Learn Data Structures & Algorithms</title>
+<style>
+  /* ===== CSS Variables & Reset ===== */
+  :root {
+    --bg-primary: #0f1117;
+    --bg-secondary: #1a1d2e;
+    --bg-card: #1e2235;
+    --bg-sidebar: #13151f;
+    --text-primary: #e8eaf6;
+    --text-secondary: #9ea3b8;
+    --text-muted: #5c6080;
+    --accent: #6c63ff;
+    --accent-light: #8b85ff;
+    --accent-green: #00d68f;
+    --accent-orange: #ff9f43;
+    --accent-red: #ff6b6b;
+    --accent-blue: #4fc3f7;
+    --border: #2a2d45;
+    --code-bg: #0d1117;
+    --shadow: 0 4px 24px rgba(0,0,0,0.4);
+    --radius: 12px;
+    --sidebar-w: 260px;
+  }
+  [data-theme="light"] {
+    --bg-primary: #f0f2ff;
+    --bg-secondary: #ffffff;
+    --bg-card: #ffffff;
+    --bg-sidebar: #f7f8ff;
+    --text-primary: #1a1d2e;
+    --text-secondary: #4a4f6e;
+    --text-muted: #9ea3b8;
+    --accent: #6c63ff;
+    --accent-light: #5a52e0;
+    --border: #e0e4f5;
+    --code-bg: #1e2235;
+    --shadow: 0 4px 24px rgba(108,99,255,0.1);
+  }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  body {
+    font-family: 'Segoe UI', system-ui, -apple-system, sans-serif;
+    background: var(--bg-primary);
+    color: var(--text-primary);
+    line-height: 1.6;
+    overflow-x: hidden;
+  }
+  /* ===== Scrollbar ===== */
+  ::-webkit-scrollbar { width:6px; }
+  ::-webkit-scrollbar-track { background: var(--bg-primary); }
+  ::-webkit-scrollbar-thumb { background: var(--accent); border-radius:3px; }
+
+  /* ===== Navbar ===== */
+  .navbar {
+    position: fixed; top:0; left:0; right:0; z-index:1000;
+    height:60px;
+    background: var(--bg-secondary);
+    border-bottom: 1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+    padding:0 20px;
+    backdrop-filter: blur(10px);
+  }
+  .nav-brand {
+    display:flex; align-items:center; gap:10px;
+    font-size:1.2rem; font-weight:700; color:var(--accent);
+    text-decoration:none;
+  }
+  .nav-brand .logo-icon {
+    width:32px; height:32px; background: linear-gradient(135deg,var(--accent),var(--accent-blue));
+    border-radius:8px; display:flex; align-items:center; justify-content:center;
+    font-size:1rem;
+  }
+  .nav-center {
+    display:flex; align-items:center; gap:8px;
+    background: var(--bg-card); border:1px solid var(--border);
+    border-radius:8px; padding:6px 14px; width:320px;
+  }
+  .nav-center input {
+    background:none; border:none; outline:none;
+    color:var(--text-primary); font-size:0.9rem; width:100%;
+  }
+  .nav-center input::placeholder { color:var(--text-muted); }
+  .nav-right { display:flex; align-items:center; gap:12px; }
+  .btn-icon {
+    width:36px; height:36px; border-radius:8px;
+    background: var(--bg-card); border:1px solid var(--border);
+    color:var(--text-secondary); cursor:pointer;
+    display:flex; align-items:center; justify-content:center;
+    font-size:1rem; transition:all .2s;
+  }
+  .btn-icon:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+  .progress-badge {
+    background: linear-gradient(135deg,var(--accent),var(--accent-blue));
+    color:#fff; padding:4px 12px; border-radius:20px; font-size:0.8rem; font-weight:600;
+  }
+
+  /* ===== Layout ===== */
+  .layout {
+    display:flex; margin-top:60px; min-height:calc(100vh - 60px);
+  }
+
+  /* ===== Sidebar ===== */
+  .sidebar {
+    width:var(--sidebar-w); flex-shrink:0;
+    background: var(--bg-sidebar);
+    border-right:1px solid var(--border);
+    position:fixed; top:60px; left:0; bottom:0;
+    overflow-y:auto; padding:16px 0;
+    transition: transform .3s;
+    z-index:900;
+  }
+  .sidebar-section { margin-bottom:8px; }
+  .sidebar-label {
+    font-size:0.7rem; font-weight:700; letter-spacing:1.5px;
+    color:var(--text-muted); text-transform:uppercase;
+    padding:8px 20px 4px;
+  }
+  .sidebar-item {
+    display:flex; align-items:center; gap:10px;
+    padding:9px 20px; cursor:pointer;
+    color:var(--text-secondary); font-size:0.9rem;
+    transition:all .15s; border-left:3px solid transparent;
+    position:relative;
+  }
+  .sidebar-item:hover { background:var(--bg-card); color:var(--text-primary); }
+  .sidebar-item.active {
+    background: linear-gradient(90deg,rgba(108,99,255,.15),transparent);
+    color:var(--accent); border-left-color:var(--accent); font-weight:600;
+  }
+  .sidebar-item .item-icon { font-size:1rem; width:20px; text-align:center; }
+  .badge-difficulty {
+    margin-left:auto; font-size:0.65rem; padding:2px 7px;
+    border-radius:10px; font-weight:600;
+  }
+  .badge-easy { background:rgba(0,214,143,.15); color:var(--accent-green); }
+  .badge-med  { background:rgba(255,159,67,.15); color:var(--accent-orange); }
+  .badge-hard { background:rgba(255,107,107,.15); color:var(--accent-red); }
+  .sidebar-item .done-check { margin-left:auto; color:var(--accent-green); font-size:.85rem; display:none; }
+  .sidebar-item.completed .done-check { display:block; }
+  .sidebar-item.completed .badge-difficulty { display:none; }
+
+  /* ===== Main Content ===== */
+  .main {
+    margin-left:var(--sidebar-w);
+    flex:1; padding:0;
+    min-height:100vh;
+  }
+  .content-area { padding:32px; max-width:960px; }
+
+  /* ===== Hero ===== */
+  .hero {
+    background: linear-gradient(135deg,#1a1d2e 0%,#0f1117 50%,#1a1d2e 100%);
+    padding:60px 32px; text-align:center; position:relative; overflow:hidden;
+  }
+  [data-theme="light"] .hero { background: linear-gradient(135deg,#f0f2ff,#e8ebff,#f0f2ff); }
+  .hero::before {
+    content:''; position:absolute; inset:0;
+    background: radial-gradient(ellipse at 50% 0%,rgba(108,99,255,.3),transparent 70%);
+  }
+  .hero-content { position:relative; }
+  .hero h1 { font-size:2.8rem; font-weight:800; margin-bottom:12px; }
+  .hero h1 span { background:linear-gradient(135deg,var(--accent),var(--accent-blue)); -webkit-background-clip:text; -webkit-text-fill-color:transparent; }
+  .hero p { font-size:1.1rem; color:var(--text-secondary); max-width:600px; margin:0 auto 28px; }
+  .hero-btns { display:flex; gap:12px; justify-content:center; flex-wrap:wrap; }
+  .btn-primary {
+    padding:12px 28px; background:linear-gradient(135deg,var(--accent),var(--accent-blue));
+    color:#fff; border:none; border-radius:10px; font-size:1rem; font-weight:600;
+    cursor:pointer; transition:all .2s;
+  }
+  .btn-primary:hover { transform:translateY(-2px); box-shadow:0 8px 24px rgba(108,99,255,.4); }
+  .btn-outline {
+    padding:12px 28px; background:transparent;
+    color:var(--accent); border:1px solid var(--accent); border-radius:10px;
+    font-size:1rem; font-weight:600; cursor:pointer; transition:all .2s;
+  }
+  .btn-outline:hover { background:var(--accent); color:#fff; }
+
+  /* ===== Stats Bar ===== */
+  .stats-bar {
+    display:grid; grid-template-columns:repeat(4,1fr);
+    gap:16px; padding:24px 32px;
+    border-bottom:1px solid var(--border);
+  }
+  .stat-card {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:16px 20px;
+    display:flex; align-items:center; gap:14px;
+  }
+  .stat-icon {
+    width:44px; height:44px; border-radius:10px;
+    display:flex; align-items:center; justify-content:center; font-size:1.3rem;
+  }
+  .stat-label { font-size:0.78rem; color:var(--text-muted); }
+  .stat-value { font-size:1.4rem; font-weight:700; }
+
+  /* ===== Topic View ===== */
+  .topic-view { display:none; }
+  .topic-view.active { display:block; }
+  .home-view { display:block; }
+  .home-view.hidden { display:none; }
+
+  /* ===== Tabs ===== */
+  .tabs {
+    display:flex; gap:4px; padding:20px 32px 0;
+    border-bottom:1px solid var(--border);
+    background:var(--bg-secondary); position:sticky; top:60px; z-index:100;
+  }
+  .tab-btn {
+    padding:10px 20px; border:none; background:none;
+    color:var(--text-secondary); font-size:0.9rem; cursor:pointer;
+    border-bottom:2px solid transparent; transition:all .15s;
+    display:flex; align-items:center; gap:7px;
+  }
+  .tab-btn.active { color:var(--accent); border-bottom-color:var(--accent); font-weight:600; }
+  .tab-btn:hover { color:var(--text-primary); }
+  .tab-content { display:none; padding:32px; }
+  .tab-content.active { display:block; }
+
+  /* ===== Cards ===== */
+  .card {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:24px; margin-bottom:20px;
+    box-shadow:var(--shadow);
+  }
+  .card h2 { font-size:1.4rem; font-weight:700; margin-bottom:12px; }
+  .card h3 { font-size:1.1rem; font-weight:600; margin-bottom:10px; color:var(--accent); }
+  .card p { color:var(--text-secondary); margin-bottom:12px; }
+
+  /* ===== Complexity Table ===== */
+  .complexity-table { width:100%; border-collapse:collapse; font-size:0.88rem; }
+  .complexity-table th, .complexity-table td {
+    padding:10px 14px; text-align:left; border-bottom:1px solid var(--border);
+  }
+  .complexity-table th { color:var(--text-muted); font-weight:600; text-transform:uppercase; font-size:.75rem; letter-spacing:.5px; }
+  .complexity-table tr:hover td { background:rgba(108,99,255,.05); }
+  .tc-green { color:var(--accent-green); font-weight:600; }
+  .tc-orange { color:var(--accent-orange); font-weight:600; }
+  .tc-red { color:var(--accent-red); font-weight:600; }
+
+  /* ===== Code Block ===== */
+  .code-tabs { display:flex; gap:4px; margin-bottom:-1px; }
+  .code-tab-btn {
+    padding:6px 16px; border:1px solid var(--border); border-bottom:none;
+    background:var(--bg-primary); color:var(--text-muted); font-size:.82rem;
+    cursor:pointer; border-radius:6px 6px 0 0; transition:all .15s;
+  }
+  .code-tab-btn.active { background:var(--code-bg); color:var(--accent); border-color:var(--border); }
+  .code-block {
+    background:var(--code-bg); border:1px solid var(--border);
+    border-radius:0 8px 8px 8px; overflow:hidden; position:relative;
+  }
+  .code-block pre {
+    padding:20px; overflow-x:auto; font-family:'Fira Code','Consolas',monospace;
+    font-size:.85rem; line-height:1.7; color:#e8eaf6;
+  }
+  .copy-btn {
+    position:absolute; top:10px; right:10px;
+    background:var(--bg-card); border:1px solid var(--border);
+    color:var(--text-secondary); padding:4px 10px; border-radius:6px;
+    font-size:.75rem; cursor:pointer; transition:all .15s;
+  }
+  .copy-btn:hover { background:var(--accent); color:#fff; border-color:var(--accent); }
+  /* Syntax coloring */
+  .kw { color:#c792ea; } .fn { color:#82aaff; }
+  .str { color:#c3e88d; } .cm { color:#546e7a; font-style:italic; }
+  .num { color:#f78c6c; } .tp { color:#ffcb6b; }
+
+  /* ===== Visualizer ===== */
+  .viz-container {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius); overflow:hidden; margin-bottom:20px;
+  }
+  .viz-header {
+    padding:16px 20px; border-bottom:1px solid var(--border);
+    display:flex; align-items:center; justify-content:space-between;
+  }
+  .viz-header h3 { font-size:1rem; font-weight:600; }
+  .viz-controls {
+    display:flex; gap:8px; align-items:center; flex-wrap:wrap;
+    padding:14px 20px; border-bottom:1px solid var(--border);
+  }
+  .viz-input {
+    background:var(--bg-primary); border:1px solid var(--border);
+    color:var(--text-primary); padding:7px 12px; border-radius:8px;
+    font-size:.88rem; width:90px; outline:none;
+  }
+  .viz-input:focus { border-color:var(--accent); }
+  .btn-sm {
+    padding:7px 16px; border-radius:8px; border:none;
+    font-size:.85rem; font-weight:600; cursor:pointer; transition:all .15s;
+  }
+  .btn-accent { background:var(--accent); color:#fff; }
+  .btn-accent:hover { background:var(--accent-light); }
+  .btn-green { background:var(--accent-green); color:#0f1117; }
+  .btn-red { background:var(--accent-red); color:#fff; }
+  .btn-blue { background:var(--accent-blue); color:#0f1117; }
+  .btn-orange { background:var(--accent-orange); color:#0f1117; }
+  canvas.viz-canvas { display:block; width:100%; }
+  .viz-log {
+    padding:12px 20px; background:var(--bg-primary);
+    font-family:'Fira Code',monospace; font-size:.82rem;
+    color:var(--accent-green); min-height:40px; border-top:1px solid var(--border);
+  }
+
+  /* ===== Speed Slider ===== */
+  .speed-wrap { display:flex; align-items:center; gap:8px; font-size:.82rem; color:var(--text-muted); }
+  input[type=range] { width:80px; accent-color:var(--accent); cursor:pointer; }
+
+  /* ===== Quiz ===== */
+  .quiz-card {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:28px; margin-bottom:20px;
+  }
+  .quiz-question { font-size:1.05rem; font-weight:600; margin-bottom:18px; }
+  .quiz-options { display:grid; gap:10px; }
+  .quiz-opt {
+    padding:12px 18px; border:1px solid var(--border);
+    border-radius:10px; cursor:pointer; transition:all .15s;
+    font-size:.92rem; color:var(--text-secondary);
+  }
+  .quiz-opt:hover { border-color:var(--accent); color:var(--text-primary); background:rgba(108,99,255,.08); }
+  .quiz-opt.correct { border-color:var(--accent-green); background:rgba(0,214,143,.12); color:var(--accent-green); }
+  .quiz-opt.wrong { border-color:var(--accent-red); background:rgba(255,107,107,.12); color:var(--accent-red); }
+  .quiz-feedback { margin-top:14px; padding:12px 16px; border-radius:8px; font-size:.9rem; display:none; }
+  .quiz-feedback.show { display:block; }
+  .quiz-feedback.correct-fb { background:rgba(0,214,143,.1); color:var(--accent-green); border:1px solid var(--accent-green); }
+  .quiz-feedback.wrong-fb { background:rgba(255,107,107,.1); color:var(--accent-red); border:1px solid var(--accent-red); }
+  .quiz-score { text-align:center; padding:20px; font-size:1.3rem; font-weight:700; color:var(--accent); }
+
+  /* ===== Practice Problems ===== */
+  .problem-card {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:10px; padding:18px 20px;
+    display:flex; align-items:center; gap:16px; margin-bottom:12px;
+    cursor:pointer; transition:all .2s;
+  }
+  .problem-card:hover { border-color:var(--accent); transform:translateX(4px); }
+  .problem-num { font-size:.8rem; color:var(--text-muted); min-width:30px; }
+  .problem-title { font-weight:600; flex:1; }
+  .problem-meta { display:flex; gap:8px; align-items:center; font-size:.8rem; color:var(--text-muted); }
+  .solved-icon { color:var(--accent-green); }
+
+  /* ===== Code Editor ===== */
+  .editor-wrap {
+    background:var(--code-bg); border:1px solid var(--border);
+    border-radius:var(--radius); overflow:hidden;
+  }
+  .editor-toolbar {
+    background:var(--bg-card); padding:10px 16px;
+    display:flex; align-items:center; gap:10px;
+    border-bottom:1px solid var(--border);
+  }
+  .editor-textarea {
+    width:100%; min-height:200px; background:var(--code-bg);
+    color:#e8eaf6; border:none; outline:none; padding:16px;
+    font-family:'Fira Code','Consolas',monospace; font-size:.88rem;
+    line-height:1.7; resize:vertical;
+  }
+  .editor-output {
+    padding:14px; background:var(--bg-primary);
+    font-family:'Fira Code',monospace; font-size:.82rem;
+    color:var(--accent-green); border-top:1px solid var(--border);
+    min-height:60px; white-space:pre-wrap;
+  }
+
+  /* ===== Topic Grid (Home) ===== */
+  .topic-grid {
+    display:grid; grid-template-columns:repeat(auto-fill,minmax(200px,1fr));
+    gap:16px; padding:24px 32px;
+  }
+  .topic-tile {
+    background:var(--bg-card); border:1px solid var(--border);
+    border-radius:var(--radius); padding:20px;
+    cursor:pointer; transition:all .2s; text-align:center;
+  }
+  .topic-tile:hover { border-color:var(--accent); transform:translateY(-4px); box-shadow:var(--shadow); }
+  .topic-tile .tile-icon { font-size:2rem; margin-bottom:10px; }
+  .topic-tile .tile-name { font-weight:700; font-size:.95rem; }
+  .topic-tile .tile-count { font-size:.78rem; color:var(--text-muted); margin-top:4px; }
+  .topic-tile .tile-progress { margin-top:12px; height:4px; background:var(--border); border-radius:2px; overflow:hidden; }
+  .topic-tile .tile-progress-bar { height:100%; background:linear-gradient(90deg,var(--accent),var(--accent-blue)); border-radius:2px; transition:width .5s; }
+
+  /* ===== Breadcrumb ===== */
+  .breadcrumb {
+    padding:16px 32px 0; display:flex; align-items:center; gap:6px;
+    font-size:.85rem; color:var(--text-muted);
+  }
+  .breadcrumb span { cursor:pointer; }
+  .breadcrumb span:hover { color:var(--accent); }
+  .breadcrumb .sep { color:var(--border); }
+
+  /* ===== Callout ===== */
+  .callout {
+    border-left:4px solid var(--accent); background:rgba(108,99,255,.08);
+    border-radius:0 8px 8px 0; padding:14px 18px; margin:14px 0;
+    font-size:.9rem;
+  }
+  .callout.info { border-color:var(--accent-blue); background:rgba(79,195,247,.08); }
+  .callout.tip { border-color:var(--accent-green); background:rgba(0,214,143,.08); }
+  .callout.warn { border-color:var(--accent-orange); background:rgba(255,159,67,.08); }
+
+  /* ===== Tags ===== */
+  .tag {
+    display:inline-block; padding:3px 10px; border-radius:20px;
+    font-size:.75rem; font-weight:600; margin:3px;
+  }
+  .tag-purple { background:rgba(108,99,255,.2); color:var(--accent); }
+  .tag-blue   { background:rgba(79,195,247,.2); color:var(--accent-blue); }
+  .tag-green  { background:rgba(0,214,143,.2); color:var(--accent-green); }
+
+  /* ===== Mobile Hamburger ===== */
+  .hamburger {
+    display:none; width:36px; height:36px; border:none;
+    background:var(--bg-card); border-radius:8px; cursor:pointer;
+    font-size:1.2rem; color:var(--text-primary); align-items:center; justify-content:center;
+  }
+  .sidebar-overlay {
+    display:none; position:fixed; inset:0;
+    background:rgba(0,0,0,.5); z-index:800;
+  }
+
+  /* ===== Responsive ===== */
+  @media (max-width:768px) {
+    :root { --sidebar-w:0px; }
+    .sidebar { transform:translateX(-260px); width:260px; }
+    .sidebar.open { transform:translateX(0); }
+    .sidebar-overlay.open { display:block; }
+    .main { margin-left:0; }
+    .hamburger { display:flex; }
+    .nav-center { display:none; }
+    .stats-bar { grid-template-columns:repeat(2,1fr); }
+    .hero h1 { font-size:1.8rem; }
+    .content-area { padding:20px; }
+    .tab-content { padding:20px; }
+    .breadcrumb { padding:12px 20px 0; }
+    .topic-grid { padding:16px 20px; }
+  }
+  @media (max-width:480px) {
+    .stats-bar { grid-template-columns:1fr 1fr; padding:16px; gap:12px; }
+    .hero-btns { flex-direction:column; align-items:center; }
+  }
+
+  /* ===== Animations ===== */
+  @keyframes fadeIn { from { opacity:0; transform:translateY(10px); } to { opacity:1; transform:translateY(0); } }
+  .fade-in { animation:fadeIn .3s ease forwards; }
+  @keyframes pulse { 0%,100%{opacity:1;} 50%{opacity:.5;} }
+  .pulse { animation:pulse 1.5s infinite; }
+  @keyframes slideIn { from{transform:translateX(-20px);opacity:0;} to{transform:translateX(0);opacity:1;} }
+  .slide-in { animation:slideIn .3s ease; }
+  /* Node pop */
+  @keyframes pop { 0%{transform:scale(0.5);opacity:0;} 60%{transform:scale(1.15);} 100%{transform:scale(1);opacity:1;} }
+</style>
+</head>
+<body>
+
+<!-- ===== NAVBAR ===== -->
+<nav class="navbar">
+  <button class="hamburger" id="hamburgerBtn" onclick="toggleSidebar()">☰</button>
+  <a href="#" class="nav-brand" onclick="showHome()">
+    <div class="logo-icon">🧠</div>
+    <span>DSA Master</span>
+  </a>
+  <div class="nav-center">
+    <span>🔍</span>
+    <input type="text" id="searchInput" placeholder="Search topics, algorithms..." oninput="handleSearch()" />
+  </div>
+  <div class="nav-right">
+    <div class="progress-badge" id="progressBadge">0 / 12</div>
+    <button class="btn-icon" onclick="toggleTheme()" title="Toggle Theme" id="themeBtn">🌙</button>
+  </div>
+</nav>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+
+<!-- ===== SIDEBAR ===== -->
+<aside class="sidebar" id="sidebar">
+  <div class="sidebar-section">
+    <div class="sidebar-label">🏠 Navigation</div>
+    <div class="sidebar-item active" id="nav-home" onclick="showHome()">
+      <span class="item-icon">🏠</span> Home Dashboard
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">📦 Linear DS</div>
+    <div class="sidebar-item" id="nav-array" onclick="showTopic('array')">
+      <span class="item-icon">📊</span> Arrays
+      <span class="badge-difficulty badge-easy">Easy</span>
+      <span class="done-check">✓</span>
+    </div>
+    <div class="sidebar-item" id="nav-linkedlist" onclick="showTopic('linkedlist')">
+      <span class="item-icon">🔗</span> Linked List
+      <span class="badge-difficulty badge-med">Med</span>
+      <span class="done-check">✓</span>
+    </div>
+    <div class="sidebar-item" id="nav-stack" onclick="showTopic('stack')">
+      <span class="item-icon">📚</span> Stack
+      <span class="badge-difficulty badge-easy">Easy</span>
+      <span class="done-check">✓</span>
+    </div>
+    <div class="sidebar-item" id="nav-queue" onclick="showTopic('queue')">
+      <span class="item-icon">🎫</span> Queue
+      <span class="badge-difficulty badge-easy">Easy</span>
+      <span class="done-check">✓</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">🌿 Non-Linear DS</div>
+    <div class="sidebar-item" id="nav-tree" onclick="showTopic('tree')">
+      <span class="item-icon">🌳</span> Binary Tree
+      <span class="badge-difficulty badge-med">Med</span>
+      <span class="done-check">✓</span>
+    </div>
+    <div class="sidebar-item" id="nav-bst" onclick="showTopic('bst')">
+      <span class="item-icon">🔍</span> BST
+      <span class="badge-difficulty badge-med">Med</span>
+      <span class="done-check">✓</span>
+    </div>
+    <div class="sidebar-item" id="nav-graph" onclick="showTopic('graph')">
+      <span class="item-icon">🕸️</span> Graph
+      <span class="badge-difficulty badge-hard">Hard</span>
+      <span class="done-check">✓</span>
+    </div>
+    <div class="sidebar-item" id="nav-heap" onclick="showTopic('heap')">
+      <span class="item-icon">⛰️</span> Heap / Priority Q
+      <span class="badge-difficulty badge-med">Med</span>
+      <span class="done-check">✓</span>
+    </div>
+  </div>
+
+  <div class="sidebar-section">
+    <div class="sidebar-label">⚡ Algorithms</div>
+    <div class="sidebar-item" id="nav-sorting" onclick="showTopic('sorting')">
+      <span class="item-icon">↕️</span> Sorting
+      <span class="badge-difficulty badge-med">Med</span>
+      <span class="done-check">✓</span>
+    </div>
+    <div class="sidebar-item" id="nav-searching" onclick="showTopic('searching')">
+      <span class="item-icon">🔭</span> Searching
+      <span class="badge-difficulty badge-easy">Easy</span>
+      <span class="done-check">✓</span>
+    </div>
+    <div class="sidebar-item" id="nav-dp" onclick="showTopic('dp')">
+      <span class="item-icon">🧩</span> Dynamic Programming
+      <span class="badge-difficulty badge-hard">Hard</span>
+      <span class="done-check">✓</span>
+    </div>
+    <div class="sidebar-item" id="nav-recursion" onclick="showTopic('recursion')">
+      <span class="item-icon">🔄</span> Recursion
+      <span class="badge-difficulty badge-med">Med</span>
+      <span class="done-check">✓</span>
+    </div>
+  </div>
+</aside>
+
+<!-- ===== MAIN CONTENT ===== -->
+<main class="main" id="mainContent">
+
+  <!-- HOME VIEW -->
+  <div id="home-view" class="home-view">
+    <div class="hero">
+      <div class="hero-content fade-in">
+        <h1>Master <span>Data Structures</span><br>& Algorithms</h1>
+        <p>Learn through interactive visualizations, clean explanations, code examples, and quizzes. Track your progress as you go.</p>
+        <div class="hero-btns">
+          <button class="btn-primary" onclick="showTopic('array')">🚀 Start Learning</button>
+          <button class="btn-outline" onclick="showTopic('sorting')">▶ Watch Visualizer</button>
+        </div>
+      </div>
+    </div>
+
+    <div class="stats-bar">
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(108,99,255,.15)">📚</div>
+        <div>
+          <div class="stat-label">Topics</div>
+          <div class="stat-value">12</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(0,214,143,.15)">✅</div>
+        <div>
+          <div class="stat-label">Completed</div>
+          <div class="stat-value" id="statCompleted">0</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(79,195,247,.15)">🎯</div>
+        <div>
+          <div class="stat-label">Quiz Score</div>
+          <div class="stat-value" id="statScore">0%</div>
+        </div>
+      </div>
+      <div class="stat-card">
+        <div class="stat-icon" style="background:rgba(255,159,67,.15)">⚡</div>
+        <div>
+          <div class="stat-label">Streak</div>
+          <div class="stat-value" id="statStreak">1 🔥</div>
+        </div>
+      </div>
+    </div>
+
+    <div class="topic-grid" id="topicGrid"></div>
+  </div>
+
+  <!-- SEARCH RESULTS -->
+  <div id="search-view" style="display:none; padding:32px;">
+    <h2 style="margin-bottom:16px;">Search Results</h2>
+    <div id="searchResults"></div>
+  </div>
+
+  <!-- TOPIC VIEWS -->
+  <div id="array-view" class="topic-view"></div>
+  <div id="linkedlist-view" class="topic-view"></div>
+  <div id="stack-view" class="topic-view"></div>
+  <div id="queue-view" class="topic-view"></div>
+  <div id="tree-view" class="topic-view"></div>
+  <div id="bst-view" class="topic-view"></div>
+  <div id="graph-view" class="topic-view"></div>
+  <div id="heap-view" class="topic-view"></div>
+  <div id="sorting-view" class="topic-view"></div>
+  <div id="searching-view" class="topic-view"></div>
+  <div id="dp-view" class="topic-view"></div>
+  <div id="recursion-view" class="topic-view"></div>
+
+</main>
+
+<script>
+// ============================================================
+//  DSA MASTER – Full Application Logic
+// ============================================================
+
+// ---------- State ----------
+const state = {
+  theme: localStorage.getItem('dsa-theme') || 'dark',
+  completed: JSON.parse(localStorage.getItem('dsa-completed') || '[]'),
+  quizScores: JSON.parse(localStorage.getItem('dsa-quiz-scores') || '{}'),
+  currentTopic: null,
+  vizAnimating: false,
+  animSpeed: 600
+};
+
+// ---------- Topic Meta ----------
+const TOPICS = [
+  { id:'array',      name:'Arrays',              icon:'📊', count:'8 problems', color:'#6c63ff' },
+  { id:'linkedlist', name:'Linked List',          icon:'🔗', count:'7 problems', color:'#4fc3f7' },
+  { id:'stack',      name:'Stack',                icon:'📚', count:'5 problems', color:'#00d68f' },
+  { id:'queue',      name:'Queue',                icon:'🎫', count:'5 problems', color:'#ff9f43' },
+  { id:'tree',       name:'Binary Tree',          icon:'🌳', count:'10 problems', color:'#a29bfe' },
+  { id:'bst',        name:'BST',                  icon:'🔍', count:'8 problems', color:'#fd79a8' },
+  { id:'graph',      name:'Graph',                icon:'🕸️', count:'10 problems', color:'#e17055' },
+  { id:'heap',       name:'Heap',                 icon:'⛰️', count:'6 problems', color:'#fdcb6e' },
+  { id:'sorting',    name:'Sorting',              icon:'↕️', count:'8 problems', color:'#55efc4' },
+  { id:'searching',  name:'Searching',            icon:'🔭', count:'5 problems', color:'#74b9ff' },
+  { id:'dp',         name:'Dynamic Programming',  icon:'🧩', count:'12 problems', color:'#a29bfe' },
+  { id:'recursion',  name:'Recursion',            icon:'🔄', count:'7 problems', color:'#fab1a0' },
+];
+
+// ============================================================
+//  INIT
+// ============================================================
+document.addEventListener('DOMContentLoaded', () => {
+  applyTheme();
+  renderTopicGrid();
+  updateStats();
+  updateProgressBadge();
+});
+
+function applyTheme() {
+  document.documentElement.setAttribute('data-theme', state.theme);
+  document.getElementById('themeBtn').textContent = state.theme === 'dark' ? '🌙' : '☀️';
+}
+
+function toggleTheme() {
+  state.theme = state.theme === 'dark' ? 'light' : 'dark';
+  localStorage.setItem('dsa-theme', state.theme);
+  applyTheme();
+}
+
+function toggleSidebar() {
+  document.getElementById('sidebar').classList.toggle('open');
+  document.getElementById('sidebarOverlay').classList.toggle('open');
+}
+
+// ============================================================
+//  NAVIGATION
+// ============================================================
+function showHome() {
+  hideAllTopics();
+  document.getElementById('home-view').classList.remove('hidden');
+  document.getElementById('search-view').style.display = 'none';
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  document.getElementById('nav-home').classList.add('active');
+  if (window.innerWidth <= 768) toggleSidebar();
+}
+
+function hideAllTopics() {
+  document.getElementById('home-view').classList.add('hidden');
+  document.querySelectorAll('.topic-view').forEach(v => v.classList.remove('active'));
+}
+
+function showTopic(id) {
+  hideAllTopics();
+  document.getElementById('search-view').style.display = 'none';
+  state.currentTopic = id;
+
+  // Render if empty
+  const view = document.getElementById(`${id}-view`);
+  if (!view.innerHTML.trim()) renderTopicView(id);
+  view.classList.add('active');
+
+  // Sidebar active
+  document.querySelectorAll('.sidebar-item').forEach(el => el.classList.remove('active'));
+  const navEl = document.getElementById(`nav-${id}`);
+  if (navEl) navEl.classList.add('active');
+
+  window.scrollTo({top:0, behavior:'smooth'});
+  if (window.innerWidth <= 768) toggleSidebar();
+
+  // Init visualizer
+  setTimeout(() => initViz(id), 100);
+}
+
+// ============================================================
+//  TOPIC GRID (Home)
+// ============================================================
+function renderTopicGrid() {
+  const grid = document.getElementById('topicGrid');
+  grid.innerHTML = TOPICS.map(t => {
+    const done = state.completed.includes(t.id);
+    const prog = done ? 100 : Math.floor(Math.random() * 40);
+    return `
+    <div class="topic-tile" onclick="showTopic('${t.id}')">
+      <div class="tile-icon">${t.icon}</div>
+      <div class="tile-name">${t.name}</div>
+      <div class="tile-count">${t.count}</div>
+      <div class="tile-progress">
+        <div class="tile-progress-bar" style="width:${prog}%; background:${t.color}"></div>
+      </div>
+    </div>`;
+  }).join('');
+}
+
+function updateStats() {
+  document.getElementById('statCompleted').textContent = state.completed.length;
+  const scores = Object.values(state.quizScores);
+  const avg = scores.length ? Math.round(scores.reduce((a,b)=>a+b,0)/scores.length) : 0;
+  document.getElementById('statScore').textContent = avg + '%';
+}
+
+function updateProgressBadge() {
+  document.getElementById('progressBadge').textContent =
+    `${state.completed.length} / ${TOPICS.length}`;
+  // update sidebar done checks
+  TOPICS.forEach(t => {
+    const el = document.getElementById(`nav-${t.id}`);
+    if (el) el.classList.toggle('completed', state.completed.includes(t.id));
+  });
+}
+
+function markCompleted(id) {
+  if (!state.completed.includes(id)) {
+    state.completed.push(id);
+    localStorage.setItem('dsa-completed', JSON.stringify(state.completed));
+    updateStats();
+    updateProgressBadge();
+    renderTopicGrid();
+  }
+}
+
+// ============================================================
+//  SEARCH
+// ============================================================
+function handleSearch() {
+  const q = document.getElementById('searchInput').value.toLowerCase().trim();
+  if (!q) {
+    document.getElementById('search-view').style.display = 'none';
+    showHome();
+    return;
+  }
+  hideAllTopics();
+  document.getElementById('search-view').style.display = 'block';
+  const results = TOPICS.filter(t => t.name.toLowerCase().includes(q));
+  const el = document.getElementById('searchResults');
+  el.innerHTML = results.length
+    ? results.map(t => `
+      <div class="problem-card" onclick="showTopic('${t.id}')">
+        <span style="font-size:1.5rem">${t.icon}</span>
+        <div class="problem-title">${t.name}</div>
+        <div class="problem-meta">${t.count}</div>
+      </div>`).join('')
+    : '<p style="color:var(--text-muted)">No results found.</p>';
+}
+
+// ============================================================
+//  CODE BLOCK HELPER
+// ============================================================
+function codeBlock(langs) {
+  const ids = Object.keys(langs);
+  const uid = 'cb' + Math.random().toString(36).substr(2,6);
+  return `
+  <div class="code-tabs">
+    ${ids.map((l,i) => `<button class="code-tab-btn ${i===0?'active':''}" onclick="switchCodeTab('${uid}','${l}')">${l}</button>`).join('')}
+  </div>
+  <div class="code-block">
+    <button class="copy-btn" onclick="copyCode('${uid}-${ids[0]}')">📋 Copy</button>
+    ${ids.map((l,i) => `
+      <pre id="${uid}-${l}" style="display:${i===0?'block':'none'}">${langs[l]}</pre>
+    `).join('')}
+  </div>`;
+}
+
+function switchCodeTab(uid, lang) {
+  const block = document.querySelector(`#${uid}-${lang}`).closest('.code-block');
+  const tabs = block.previousElementSibling.querySelectorAll('.code-tab-btn');
+  tabs.forEach(t => t.classList.toggle('active', t.textContent === lang));
+  block.querySelectorAll('pre').forEach(p => p.style.display = 'none');
+  document.getElementById(`${uid}-${lang}`).style.display = 'block';
+  block.querySelector('.copy-btn').setAttribute('onclick', `copyCode('${uid}-${lang}')`);
+}
+
+function copyCode(id) {
+  const text = document.getElementById(id)?.innerText || '';
+  navigator.clipboard.writeText(text).then(() => {
+    const btn = document.querySelector(`[onclick="copyCode('${id}')"]`);
+    if (btn) { btn.textContent = '✅ Copied'; setTimeout(() => btn.textContent = '📋 Copy', 1500); }
+  });
+}
+
+// ============================================================
+//  QUIZ ENGINE
+// ============================================================
+const QUIZZES = {
+  array: [
+    { q:'What is the time complexity of accessing an element in an array by index?',
+      opts:['O(n)','O(log n)','O(1)','O(n²)'], ans:2,
+      exp:'Arrays provide O(1) random access using direct index computation.' },
+    { q:'Which operation on an array is O(n) in the worst case?',
+      opts:['Access','Insert at beginning','Append at end','Update'],
+      ans:1, exp:'Inserting at the beginning requires shifting all elements right.' },
+    { q:'What is the space complexity of an array of n elements?',
+      opts:['O(1)','O(log n)','O(n)','O(n²)'], ans:2,
+      exp:'An array of n elements requires O(n) space to store n values.' },
+  ],
+  sorting: [
+    { q:'What is the average time complexity of Quick Sort?',
+      opts:['O(n)','O(n log n)','O(n²)','O(log n)'], ans:1,
+      exp:'Quick Sort has O(n log n) average but O(n²) worst case.' },
+    { q:'Which sorting algorithm is stable by default?',
+      opts:['Quick Sort','Heap Sort','Merge Sort','Selection Sort'], ans:2,
+      exp:'Merge Sort is stable — equal elements retain their original order.' },
+    { q:'Which algorithm has the best space complexity O(1)?',
+      opts:['Merge Sort','Quick Sort','Heap Sort','Bubble Sort'], ans:2,
+      exp:'Heap Sort sorts in-place using O(1) extra space.' },
+  ],
+  stack: [
+    { q:'Which principle does a Stack follow?',
+      opts:['FIFO','LIFO','LILO','FILO — same as LIFO'], ans:3,
+      exp:'Stack follows Last-In-First-Out (LIFO), also called FILO.' },
+    { q:'Which application uses a Stack?',
+      opts:['CPU Scheduling','Undo/Redo in editors','Breadth First Search','Print Queue'], ans:1,
+      exp:'Undo/Redo operations use a stack to track state history.' },
+  ],
+  linkedlist: [
+    { q:'What is the time complexity of inserting at the beginning of a Linked List?',
+      opts:['O(1)','O(n)','O(log n)','O(n²)'], ans:0,
+      exp:'Inserting at the head just changes the head pointer — O(1).' },
+    { q:'Which traversal is NOT possible in a Singly Linked List?',
+      opts:['Forward','Backward','Both are possible','None'], ans:1,
+      exp:'Singly Linked List nodes only point forward, so backward traversal requires reversal.' },
+  ],
+  tree: [
+    { q:'What is the maximum number of nodes in a binary tree of height h?',
+      opts:['2h','2^h - 1','2^(h+1) - 1','h²'], ans:2,
+      exp:'A full binary tree of height h has 2^(h+1) - 1 nodes.' },
+    { q:'Which traversal visits root first?',
+      opts:['Inorder','Postorder','Preorder','Level order'], ans:2,
+      exp:'Preorder: Root → Left → Right' },
+  ],
+  graph: [
+    { q:'BFS uses which data structure internally?',
+      opts:['Stack','Queue','Heap','Array'], ans:1,
+      exp:'BFS uses a queue to explore nodes level by level.' },
+    { q:'What is the time complexity of BFS/DFS on a graph with V vertices and E edges?',
+      opts:['O(V)','O(E)','O(V + E)','O(V × E)'], ans:2,
+      exp:'Both BFS and DFS visit every vertex and edge once: O(V + E).' },
+  ],
+  dp: [
+    { q:'Which technique does DP use to avoid redundant computation?',
+      opts:['Divide & Conquer','Memoization / Tabulation','Greedy','Backtracking'], ans:1,
+      exp:'DP stores results of subproblems (memoization or tabulation) to avoid recomputation.' },
+    { q:'What is the time complexity of the classic 0/1 Knapsack DP solution?',
+      opts:['O(n)','O(n log n)','O(nW)','O(2^n)'], ans:2,
+      exp:'The DP table is n × W, giving O(nW) time and space.' },
+  ],
+  bst: [
+    { q:'What is the average time complexity for search in a BST?',
+      opts:['O(1)','O(log n)','O(n)','O(n log n)'], ans:1,
+      exp:'In a balanced BST, search eliminates half the tree each step: O(log n).' },
+  ],
+  heap: [
+    { q:'What is the time complexity of inserting into a heap?',
+      opts:['O(1)','O(log n)','O(n)','O(n log n)'], ans:1,
+      exp:'Insertion adds to the end then bubbles up: O(log n).' },
+  ],
+  searching: [
+    { q:'What is the prerequisite for Binary Search?',
+      opts:['Linked list','Sorted array','Hash table','Tree'], ans:1,
+      exp:'Binary Search requires a sorted array to use divide-and-conquer.' },
+  ],
+  recursion: [
+    { q:'What is a base case in recursion?',
+      opts:['The first call','The condition that stops recursion','The return value','The stack frame'], ans:1,
+      exp:'The base case prevents infinite recursion by providing a termination condition.' },
+  ],
+};
+
+function renderQuiz(topicId) {
+  const questions = QUIZZES[topicId] || [];
+  if (!questions.length) return '<p style="color:var(--text-muted)">No quiz available yet.</p>';
+  return questions.map((q, qi) => `
+    <div class="quiz-card" id="quiz-${topicId}-${qi}">
+      <div class="quiz-question">Q${qi+1}. ${q.q}</div>
+      <div class="quiz-options">
+        ${q.opts.map((o, oi) => `
+          <div class="quiz-opt" id="qopt-${topicId}-${qi}-${oi}" onclick="answerQuiz('${topicId}',${qi},${oi})">
+            ${String.fromCharCode(65+oi)}. ${o}
+          </div>`).join('')}
+      </div>
+      <div class="quiz-feedback" id="qfb-${topicId}-${qi}">💡 ${q.exp}</div>
+    </div>`).join('') +
+    `<div class="quiz-score" id="quiz-score-${topicId}" style="display:none"></div>`;
+}
+
+let quizAnswered = {};
+function answerQuiz(tid, qi, oi) {
+  const key = `${tid}-${qi}`;
+  if (quizAnswered[key]) return;
+  quizAnswered[key] = true;
+  const q = QUIZZES[tid][qi];
+  const correct = oi === q.ans;
+  document.getElementById(`qopt-${tid}-${qi}-${oi}`).classList.add(correct ? 'correct' : 'wrong');
+  if (!correct)
+    document.getElementById(`qopt-${tid}-${qi}-${q.ans}`).classList.add('correct');
+  const fb = document.getElementById(`qfb-${tid}-${qi}`);
+  fb.classList.add('show', correct ? 'correct-fb' : 'wrong-fb');
+  // disable all options
+  document.querySelectorAll(`[id^="qopt-${tid}-${qi}-"]`).forEach(el => el.style.pointerEvents='none');
+  // check if all answered
+  const total = QUIZZES[tid].length;
+  const answered = QUIZZES[tid].map((_,i) => quizAnswered[`${tid}-${i}`] ? 1 : 0).reduce((a,b)=>a+b,0);
+  if (answered === total) {
+    const score = QUIZZES[tid].filter((_,i) => {
+      const ans = QUIZZES[tid][i].ans;
+      const selected = Object.keys(quizAnswered).includes(`${tid}-${i}`) &&
+        document.querySelectorAll(`[id^="qopt-${tid}-${i}-"]`) ?
+        [...document.querySelectorAll(`[id^="qopt-${tid}-${i}-"]`)].findIndex(el => el.classList.contains('correct') && !el.classList.contains('wrong')) : -1;
+      return selected === ans;
+    }).length;
+    const pct = Math.round((score/total)*100);
+    state.quizScores[tid] = pct;
+    localStorage.setItem('dsa-quiz-scores', JSON.stringify(state.quizScores));
+    updateStats();
+    const scoreEl = document.getElementById(`quiz-score-${tid}`);
+    scoreEl.style.display = 'block';
+    scoreEl.textContent = `🎉 Quiz Complete! Score: ${pct}%`;
+    markCompleted(tid);
+  }
+}
+
+// ============================================================
+//  PRACTICE PROBLEMS
+// ============================================================
+const PROBLEMS = {
+  array: [
+    { n:'Two Sum', d:'Easy', tags:['Hash','Array'] },
+    { n:'Best Time to Buy and Sell Stock', d:'Easy', tags:['Array','Sliding Window'] },
+    { n:'Maximum Subarray (Kadane\'s)', d:'Medium', tags:['DP','Array'] },
+    { n:'Product of Array Except Self', d:'Medium', tags:['Array','Prefix'] },
+    { n:'Container With Most Water', d:'Medium', tags:['Two Pointer'] },
+    { n:'3Sum', d:'Medium', tags:['Two Pointer','Array'] },
+    { n:'Trapping Rain Water', d:'Hard', tags:['Stack','Two Pointer'] },
+    { n:'Median of Two Sorted Arrays', d:'Hard', tags:['Binary Search'] },
+  ],
+  linkedlist: [
+    { n:'Reverse a Linked List', d:'Easy', tags:['Linked List'] },
+    { n:'Detect Cycle (Floyd\'s)', d:'Medium', tags:['Two Pointer'] },
+    { n:'Merge Two Sorted Lists', d:'Easy', tags:['Linked List'] },
+    { n:'Find Middle of Linked List', d:'Easy', tags:['Two Pointer'] },
+    { n:'Remove Nth Node from End', d:'Medium', tags:['Two Pointer'] },
+    { n:'Flatten a Multilevel DLL', d:'Medium', tags:['DFS','Linked List'] },
+    { n:'Clone List with Random Pointer', d:'Hard', tags:['Hash','Linked List'] },
+  ],
+  sorting: [
+    { n:'Sort Colors (Dutch Flag)', d:'Medium', tags:['Two Pointer'] },
+    { n:'Meeting Rooms II', d:'Medium', tags:['Heap','Sort'] },
+    { n:'Merge Intervals', d:'Medium', tags:['Sort','Array'] },
+    { n:'Largest Number', d:'Medium', tags:['Custom Sort'] },
+    { n:'Count Inversions', d:'Hard', tags:['Merge Sort'] },
+  ],
+  tree: [
+    { n:'Maximum Depth of Binary Tree', d:'Easy', tags:['DFS','Tree'] },
+    { n:'Symmetric Tree', d:'Easy', tags:['BFS','Tree'] },
+    { n:'Level Order Traversal', d:'Medium', tags:['BFS'] },
+    { n:'Binary Tree Zigzag Traversal', d:'Medium', tags:['BFS'] },
+    { n:'Lowest Common Ancestor', d:'Medium', tags:['DFS','Tree'] },
+    { n:'Diameter of Binary Tree', d:'Medium', tags:['DFS'] },
+    { n:'Serialize & Deserialize BT', d:'Hard', tags:['DFS','Design'] },
+  ],
+  dp: [
+    { n:'Fibonacci (Memoization)', d:'Easy', tags:['DP','Recursion'] },
+    { n:'Climbing Stairs', d:'Easy', tags:['DP'] },
+    { n:'Coin Change', d:'Medium', tags:['DP','BFS'] },
+    { n:'Longest Common Subsequence', d:'Medium', tags:['DP'] },
+    { n:'0/1 Knapsack', d:'Medium', tags:['DP'] },
+    { n:'Edit Distance', d:'Hard', tags:['DP'] },
+    { n:'Burst Balloons', d:'Hard', tags:['DP','Interval'] },
+  ],
+};
+
+function renderProblems(tid) {
+  const probs = PROBLEMS[tid] || PROBLEMS.array;
+  const diffColor = { Easy:'badge-easy', Medium:'badge-med', Hard:'badge-hard' };
+  return probs.map((p, i) => `
+    <div class="problem-card">
+      <div class="problem-num">#${i+1}</div>
+      <div>
+        <div class="problem-title">${p.n}</div>
+        <div style="margin-top:4px">${p.tags.map(t=>`<span class="tag tag-purple">${t}</span>`).join('')}</div>
+      </div>
+      <div class="problem-meta">
+        <span class="badge-difficulty ${diffColor[p.d]}">${p.d}</span>
+      </div>
+    </div>`).join('');
+}
+
+// ============================================================
+//  RENDER TOPIC VIEW
+// ============================================================
+function renderTopicView(id) {
+  const content = TOPIC_CONTENT[id] || TOPIC_CONTENT.array;
+  const view = document.getElementById(`${id}-view`);
+  view.innerHTML = `
+  <div class="breadcrumb">
+    <span onclick="showHome()">🏠 Home</span>
+    <span class="sep">›</span>
+    <span style="color:var(--accent)">${content.title}</span>
+  </div>
+  <div class="tabs" id="tabs-${id}">
+    <button class="tab-btn active" onclick="switchTab('${id}','learn')">📖 Learn</button>
+    <button class="tab-btn" onclick="switchTab('${id}','visualize')">🎨 Visualize</button>
+    <button class="tab-btn" onclick="switchTab('${id}','practice')">💻 Practice</button>
+    <button class="tab-btn" onclick="switchTab('${id}','quiz')">🧠 Quiz</button>
+  </div>
+
+  <div id="${id}-learn" class="tab-content active fade-in">
+    ${content.learn}
+    <div class="card">
+      <h3>⏱️ Time & Space Complexity</h3>
+      ${content.complexity}
+    </div>
+    <div class="card">
+      <h3>🎯 Common Interview Questions</h3>
+      <ul style="padding-left:20px;line-height:2.2;color:var(--text-secondary)">
+        ${content.interview.map(q=>`<li>${q}</li>`).join('')}
+      </ul>
+    </div>
+  </div>
+
+  <div id="${id}-visualize" class="tab-content fade-in">
+    ${content.visualizer || '<p style="padding:20px;color:var(--text-muted)">Visualizer loading…</p>'}
+  </div>
+
+  <div id="${id}-practice" class="tab-content fade-in">
+    <div style="padding:8px 0 20px">
+      <h2 style="margin-bottom:4px">Practice Problems</h2>
+      <p style="color:var(--text-muted);font-size:.9rem">Solve problems to reinforce your understanding.</p>
+    </div>
+    ${renderProblems(id)}
+    <div class="card" style="margin-top:20px">
+      <h3>💻 Code Playground</h3>
+      <p style="color:var(--text-muted);font-size:.88rem">Write and test your solution (JavaScript):</p>
+      <div class="editor-wrap">
+        <div class="editor-toolbar">
+          <select id="editor-lang-${id}" class="viz-input" style="width:100px">
+            <option>JavaScript</option>
+            <option>Python</option>
+          </select>
+          <button class="btn-sm btn-accent" onclick="runCode('${id}')">▶ Run</button>
+          <button class="btn-sm" style="background:var(--bg-primary);color:var(--text-secondary);border:1px solid var(--border)" onclick="clearCode('${id}')">🗑 Clear</button>
+        </div>
+        <textarea class="editor-textarea" id="editor-${id}" spellcheck="false">// Write your solution here
+function solution(input) {
+  // your code
+  return input;
+}
+
+// Test
+console.log(solution([1, 2, 3, 4, 5]));</textarea>
+        <div class="editor-output" id="editor-out-${id}">▶ Output will appear here…</div>
+      </div>
+    </div>
+  </div>
+
+  <div id="${id}-quiz" class="tab-content fade-in">
+    <div style="padding:8px 0 20px">
+      <h2 style="margin-bottom:4px">Knowledge Quiz</h2>
+      <p style="color:var(--text-muted);font-size:.9rem">Test your understanding of ${content.title}.</p>
+    </div>
+    ${renderQuiz(id)}
+  </div>
+  `;
+}
+
+function switchTab(id, tab) {
+  const tabs = document.getElementById(`tabs-${id}`);
+  tabs.querySelectorAll('.tab-btn').forEach((btn,i) => {
+    btn.classList.toggle('active', ['learn','visualize','practice','quiz'][i] === tab);
+  });
+  ['learn','visualize','practice','quiz'].forEach(t => {
+    const el = document.getElementById(`${id}-${t}`);
+    if (el) el.classList.toggle('active', t === tab);
+  });
+  if (tab === 'visualize') setTimeout(() => initViz(id), 50);
+}
+
+function runCode(id) {
+  const code = document.getElementById(`editor-${id}`).value;
+  const out = document.getElementById(`editor-out-${id}`);
+  const logs = [];
+  const fakeConsole = { log: (...args) => logs.push(args.map(String).join(' ')) };
+  try {
+    const fn = new Function('console', code);
+    fn(fakeConsole);
+    out.style.color = 'var(--accent-green)';
+    out.textContent = logs.length ? logs.join('\n') : '✅ Code ran successfully (no output)';
+  } catch(e) {
+    out.style.color = 'var(--accent-red)';
+    out.textContent = '❌ Error: ' + e.message;
+  }
+}
+
+function clearCode(id) {
+  document.getElementById(`editor-${id}`).value = '';
+  document.getElementById(`editor-out-${id}`).textContent = '▶ Output will appear here…';
+}
+
+// ============================================================
+//  TOPIC CONTENT DATABASE
+// ============================================================
+const TOPIC_CONTENT = {};
+
+// ---------- ARRAY ----------
+TOPIC_CONTENT.array = {
+  title: 'Arrays',
+  learn: `
+  <div class="content-area">
+  <div class="card">
+    <h2>📊 Arrays</h2>
+    <p>An <strong>array</strong> is a collection of elements stored at contiguous memory locations. It is the simplest data structure where each element can be accessed directly using its index.</p>
+    <div class="callout tip">💡 <strong>Real-life analogy:</strong> Think of a row of lockers in a school hallway. Each locker has a number (index), and you can directly go to any locker without opening others first.</div>
+    <h3>Key Properties</h3>
+    <ul style="padding-left:20px;line-height:2.2;color:var(--text-secondary)">
+      <li>Fixed size (static arrays) or dynamic (ArrayList/vector)</li>
+      <li>Elements stored in contiguous memory</li>
+      <li>Zero-based indexing in most languages</li>
+      <li>Supports random access in O(1)</li>
+    </ul>
+  </div>
+
+  <div class="card">
+    <h3>📝 Code Examples</h3>
+    ${codeBlock({
+      'C++': `<span class="cm">// Array operations in C++</span>
+<span class="kw">#include</span> <span class="str">&lt;iostream&gt;</span>
+<span class="kw">#include</span> <span class="str">&lt;vector&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    <span class="cm">// Static array</span>
+    <span class="kw">int</span> arr[<span class="num">5</span>] = {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>};
+
+    <span class="cm">// Access: O(1)</span>
+    cout &lt;&lt; arr[<span class="num">2</span>];  <span class="cm">// Output: 30</span>
+
+    <span class="cm">// Dynamic array (vector)</span>
+    vector&lt;<span class="kw">int</span>&gt; v = {<span class="num">1</span>, <span class="num">2</span>, <span class="num">3</span>};
+    v.<span class="fn">push_back</span>(<span class="num">4</span>);   <span class="cm">// Append: O(1) amortized</span>
+    v.<span class="fn">insert</span>(v.<span class="fn">begin</span>(), <span class="num">0</span>); <span class="cm">// Insert at start: O(n)</span>
+
+    <span class="cm">// Traverse</span>
+    <span class="kw">for</span> (<span class="kw">int</span> x : v)
+        cout &lt;&lt; x &lt;&lt; <span class="str">" "</span>;
+    <span class="kw">return</span> <span class="num">0</span>;
+}`,
+      'Java': `<span class="cm">// Array operations in Java</span>
+<span class="kw">import</span> java.util.ArrayList;
+
+<span class="kw">public class</span> <span class="tp">ArrayDemo</span> {
+    <span class="kw">public static void</span> <span class="fn">main</span>(String[] args) {
+        <span class="cm">// Static array</span>
+        <span class="kw">int</span>[] arr = {<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>};
+
+        <span class="cm">// Access: O(1)</span>
+        System.out.<span class="fn">println</span>(arr[<span class="num">2</span>]);  <span class="cm">// 30</span>
+
+        <span class="cm">// Dynamic array</span>
+        ArrayList&lt;Integer&gt; list = <span class="kw">new</span> ArrayList&lt;&gt;();
+        list.<span class="fn">add</span>(<span class="num">1</span>); list.<span class="fn">add</span>(<span class="num">2</span>); list.<span class="fn">add</span>(<span class="num">3</span>);
+        list.<span class="fn">add</span>(<span class="num">0</span>, <span class="num">0</span>); <span class="cm">// Insert at index 0: O(n)</span>
+
+        <span class="cm">// Traverse</span>
+        <span class="kw">for</span> (<span class="kw">int</span> x : list)
+            System.out.<span class="fn">print</span>(x + <span class="str">" "</span>);
+    }
+}`,
+      'Python': `<span class="cm"># Array (list) operations in Python</span>
+
+<span class="cm"># Create</span>
+arr = [<span class="num">10</span>, <span class="num">20</span>, <span class="num">30</span>, <span class="num">40</span>, <span class="num">50</span>]
+
+<span class="cm"># Access: O(1)</span>
+<span class="fn">print</span>(arr[<span class="num">2</span>])  <span class="cm"># 30</span>
+
+<span class="cm"># Append: O(1) amortized</span>
+arr.<span class="fn">append</span>(<span class="num">60</span>)
+
+<span class="cm"># Insert at beginning: O(n)</span>
+arr.<span class="fn">insert</span>(<span class="num">0</span>, <span class="num">0</span>)
+
+<span class="cm"># Delete by index: O(n)</span>
+arr.<span class="fn">pop</span>(<span class="num">2</span>)
+
+<span class="cm"># Traverse</span>
+<span class="kw">for</span> x <span class="kw">in</span> arr:
+    <span class="fn">print</span>(x, end=<span class="str">" "</span>)
+
+<span class="cm"># Kadane's Algorithm – Max Subarray</span>
+<span class="kw">def</span> <span class="fn">max_subarray</span>(nums):
+    max_sum = curr = nums[<span class="num">0</span>]
+    <span class="kw">for</span> n <span class="kw">in</span> nums[<span class="num">1</span>:]:
+        curr = <span class="fn">max</span>(n, curr + n)
+        max_sum = <span class="fn">max</span>(max_sum, curr)
+    <span class="kw">return</span> max_sum`
+    })}
+  </div>
+  </div>`,
+  complexity: `
+  <table class="complexity-table">
+    <tr><th>Operation</th><th>Array (static)</th><th>Dynamic Array</th></tr>
+    <tr><td>Access</td><td class="tc-green">O(1)</td><td class="tc-green">O(1)</td></tr>
+    <tr><td>Search</td><td class="tc-orange">O(n)</td><td class="tc-orange">O(n)</td></tr>
+    <tr><td>Insert (end)</td><td class="tc-red">O(n)</td><td class="tc-green">O(1)*</td></tr>
+    <tr><td>Insert (beginning)</td><td class="tc-red">O(n)</td><td class="tc-red">O(n)</td></tr>
+    <tr><td>Delete</td><td class="tc-orange">O(n)</td><td class="tc-orange">O(n)</td></tr>
+    <tr><td>Space</td><td class="tc-orange">O(n)</td><td class="tc-orange">O(n)</td></tr>
+  </table>
+  <p style="margin-top:10px;font-size:.82rem;color:var(--text-muted)">* amortized O(1) due to occasional doubling</p>`,
+  interview: [
+    'Find the maximum and minimum in an array in minimum comparisons.',
+    'Two Sum – find pair with given sum.',
+    'Rotate array by k positions.',
+    'Kadane\'s Algorithm – Maximum Subarray Sum.',
+    'Find missing number in array [1..n].',
+    'Merge two sorted arrays without extra space.',
+    'Find duplicates in O(n) time.',
+  ],
+  visualizer: `
+  <div class="viz-container">
+    <div class="viz-header">
+      <h3>🎨 Array Visualizer</h3>
+      <span style="font-size:.82rem;color:var(--text-muted)">Interactive & Animated</span>
+    </div>
+    <div class="viz-controls">
+      <input type="number" id="arrayVal" class="viz-input" placeholder="Value" min="1" max="99" value="42" />
+      <input type="number" id="arrayIdx" class="viz-input" placeholder="Index" min="0" max="9" value="0" />
+      <button class="btn-sm btn-green" onclick="arrayInsert()">+ Insert</button>
+      <button class="btn-sm btn-red" onclick="arrayDelete()">✕ Delete</button>
+      <button class="btn-sm btn-blue" onclick="arraySearch()">🔍 Search</button>
+      <button class="btn-sm btn-orange" onclick="arraySortViz()">↕ Sort</button>
+      <div class="speed-wrap">
+        <span>Speed:</span>
+        <input type="range" min="100" max="1000" value="500" oninput="state.animSpeed=1100-this.value" />
+      </div>
+    </div>
+    <canvas id="arrayCanvas" class="viz-canvas" height="140"></canvas>
+    <div class="viz-log" id="arrayLog">← Use controls above to interact with the array</div>
+  </div>`
+};
+
+// ---------- SORTING ----------
+TOPIC_CONTENT.sorting = {
+  title: 'Sorting Algorithms',
+  learn: `
+  <div class="content-area">
+  <div class="card">
+    <h2>↕️ Sorting Algorithms</h2>
+    <p>Sorting arranges elements in a specific order (ascending/descending). Different algorithms trade off time complexity, space, and stability.</p>
+    <div class="callout tip">💡 <strong>Real-life analogy:</strong> Sorting books on a shelf alphabetically. Different strategies: insertion sort = pick one book at a time and place it correctly; merge sort = split books into halves, sort each, then merge.</div>
+  </div>
+  <div class="card">
+    <h3>📝 Bubble Sort Code</h3>
+    ${codeBlock({
+      'C++': `<span class="cm">// Bubble Sort – O(n²)</span>
+<span class="kw">void</span> <span class="fn">bubbleSort</span>(<span class="kw">int</span> arr[], <span class="kw">int</span> n) {
+    <span class="kw">for</span> (<span class="kw">int</span> i = <span class="num">0</span>; i &lt; n-<span class="num">1</span>; i++) {
+        <span class="kw">bool</span> swapped = <span class="kw">false</span>;
+        <span class="kw">for</span> (<span class="kw">int</span> j = <span class="num">0</span>; j &lt; n-i-<span class="num">1</span>; j++) {
+            <span class="kw">if</span> (arr[j] &gt; arr[j+<span class="num">1</span>]) {
+                swap(arr[j], arr[j+<span class="num">1</span>]);
+                swapped = <span class="kw">true</span>;
+            }
+        }
+        <span class="kw">if</span> (!swapped) <span class="kw">break</span>; <span class="cm">// optimisation</span>
+    }
+}
+
+<span class="cm">// Quick Sort – O(n log n) avg</span>
+<span class="kw">int</span> <span class="fn">partition</span>(<span class="kw">int</span> arr[], <span class="kw">int</span> lo, <span class="kw">int</span> hi) {
+    <span class="kw">int</span> pivot = arr[hi], i = lo - <span class="num">1</span>;
+    <span class="kw">for</span> (<span class="kw">int</span> j = lo; j &lt; hi; j++)
+        <span class="kw">if</span> (arr[j] &lt;= pivot) swap(arr[++i], arr[j]);
+    swap(arr[i+<span class="num">1</span>], arr[hi]);
+    <span class="kw">return</span> i + <span class="num">1</span>;
+}
+<span class="kw">void</span> <span class="fn">quickSort</span>(<span class="kw">int</span> arr[], <span class="kw">int</span> lo, <span class="kw">int</span> hi) {
+    <span class="kw">if</span> (lo &lt; hi) {
+        <span class="kw">int</span> pi = <span class="fn">partition</span>(arr, lo, hi);
+        <span class="fn">quickSort</span>(arr, lo, pi-<span class="num">1</span>);
+        <span class="fn">quickSort</span>(arr, pi+<span class="num">1</span>, hi);
+    }
+}`,
+      'Python': `<span class="cm"># Merge Sort – O(n log n) guaranteed</span>
+<span class="kw">def</span> <span class="fn">merge_sort</span>(arr):
+    <span class="kw">if</span> <span class="fn">len</span>(arr) &lt;= <span class="num">1</span>:
+        <span class="kw">return</span> arr
+    mid = <span class="fn">len</span>(arr) // <span class="num">2</span>
+    left = <span class="fn">merge_sort</span>(arr[:mid])
+    right = <span class="fn">merge_sort</span>(arr[mid:])
+    <span class="kw">return</span> <span class="fn">merge</span>(left, right)
+
+<span class="kw">def</span> <span class="fn">merge</span>(l, r):
+    res, i, j = [], <span class="num">0</span>, <span class="num">0</span>
+    <span class="kw">while</span> i &lt; <span class="fn">len</span>(l) <span class="kw">and</span> j &lt; <span class="fn">len</span>(r):
+        <span class="kw">if</span> l[i] &lt;= r[j]:
+            res.<span class="fn">append</span>(l[i]); i += <span class="num">1</span>
+        <span class="kw">else</span>:
+            res.<span class="fn">append</span>(r[j]); j += <span class="num">1</span>
+    <span class="kw">return</span> res + l[i:] + r[j:]`,
+      'Java': `<span class="cm">// Heap Sort in Java</span>
+<span class="kw">public static void</span> <span class="fn">heapSort</span>(<span class="kw">int</span>[] arr) {
+    <span class="kw">int</span> n = arr.length;
+    <span class="kw">for</span> (<span class="kw">int</span> i = n/<span class="num">2</span>-<span class="num">1</span>; i &gt;= <span class="num">0</span>; i--)
+        <span class="fn">heapify</span>(arr, n, i);
+    <span class="kw">for</span> (<span class="kw">int</span> i = n-<span class="num">1</span>; i &gt; <span class="num">0</span>; i--) {
+        <span class="kw">int</span> tmp = arr[<span class="num">0</span>]; arr[<span class="num">0</span>] = arr[i]; arr[i] = tmp;
+        <span class="fn">heapify</span>(arr, i, <span class="num">0</span>);
+    }
+}
+<span class="kw">static void</span> <span class="fn">heapify</span>(<span class="kw">int</span>[] arr, <span class="kw">int</span> n, <span class="kw">int</span> i) {
+    <span class="kw">int</span> largest = i, l = <span class="num">2</span>*i+<span class="num">1</span>, r = <span class="num">2</span>*i+<span class="num">2</span>;
+    <span class="kw">if</span> (l &lt; n &amp;&amp; arr[l] &gt; arr[largest]) largest = l;
+    <span class="kw">if</span> (r &lt; n &amp;&amp; arr[r] &gt; arr[largest]) largest = r;
+    <span class="kw">if</span> (largest != i) {
+        <span class="kw">int</span> tmp = arr[i]; arr[i] = arr[largest]; arr[largest] = tmp;
+        <span class="fn">heapify</span>(arr, n, largest);
+    }
+}`
+    })}
+  </div>
+  </div>`,
+  complexity: `
+  <table class="complexity-table">
+    <tr><th>Algorithm</th><th>Best</th><th>Average</th><th>Worst</th><th>Space</th><th>Stable</th></tr>
+    <tr><td>Bubble Sort</td><td class="tc-green">O(n)</td><td class="tc-red">O(n²)</td><td class="tc-red">O(n²)</td><td class="tc-green">O(1)</td><td>✅</td></tr>
+    <tr><td>Selection Sort</td><td class="tc-red">O(n²)</td><td class="tc-red">O(n²)</td><td class="tc-red">O(n²)</td><td class="tc-green">O(1)</td><td>❌</td></tr>
+    <tr><td>Insertion Sort</td><td class="tc-green">O(n)</td><td class="tc-red">O(n²)</td><td class="tc-red">O(n²)</td><td class="tc-green">O(1)</td><td>✅</td></tr>
+    <tr><td>Merge Sort</td><td class="tc-orange">O(n log n)</td><td class="tc-orange">O(n log n)</td><td class="tc-orange">O(n log n)</td><td class="tc-orange">O(n)</td><td>✅</td></tr>
+    <tr><td>Quick Sort</td><td class="tc-orange">O(n log n)</td><td class="tc-orange">O(n log n)</td><td class="tc-red">O(n²)</td><td class="tc-green">O(log n)</td><td>❌</td></tr>
+    <tr><td>Heap Sort</td><td class="tc-orange">O(n log n)</td><td class="tc-orange">O(n log n)</td><td class="tc-orange">O(n log n)</td><td class="tc-green">O(1)</td><td>❌</td></tr>
+    <tr><td>Counting Sort</td><td class="tc-green">O(n+k)</td><td class="tc-green">O(n+k)</td><td class="tc-green">O(n+k)</td><td class="tc-orange">O(k)</td><td>✅</td></tr>
+  </table>`,
+  interview: [
+    'Explain the difference between stable and unstable sorting.',
+    'When would you choose Merge Sort over Quick Sort?',
+    'Implement Counting Sort for integers 0–100.',
+    'Sort an array of 0s, 1s, and 2s (Dutch National Flag).',
+    'Find the kth largest element using Quick Select.',
+    'Sort a nearly-sorted (k-sorted) array efficiently.',
+  ],
+  visualizer: `
+  <div class="viz-container">
+    <div class="viz-header">
+      <h3>🎨 Sorting Visualizer</h3>
+      <span style="font-size:.82rem;color:var(--text-muted)">Watch algorithms sort step-by-step</span>
+    </div>
+    <div class="viz-controls">
+      <select id="sortAlgo" class="viz-input" style="width:140px">
+        <option value="bubble">Bubble Sort</option>
+        <option value="selection">Selection Sort</option>
+        <option value="insertion">Insertion Sort</option>
+        <option value="merge">Merge Sort</option>
+      </select>
+      <button class="btn-sm btn-accent" onclick="startSort()">▶ Animate</button>
+      <button class="btn-sm btn-orange" onclick="shuffleSort()">🔀 Shuffle</button>
+      <button class="btn-sm btn-green" onclick="resetSort()">↺ Reset</button>
+      <div class="speed-wrap">
+        <span>Speed:</span>
+        <input type="range" min="50" max="800" value="400" oninput="state.animSpeed=850-this.value" />
+      </div>
+    </div>
+    <canvas id="sortCanvas" class="viz-canvas" height="220"></canvas>
+    <div class="viz-log" id="sortLog">← Press ▶ to start sorting animation</div>
+  </div>`
+};
+
+// ---------- STACK ----------
+TOPIC_CONTENT.stack = {
+  title: 'Stack',
+  learn: `
+  <div class="content-area">
+  <div class="card">
+    <h2>📚 Stack</h2>
+    <p>A <strong>Stack</strong> is a linear data structure that follows the <strong>LIFO</strong> (Last In, First Out) principle. The last element added is the first one to be removed.</p>
+    <div class="callout tip">💡 <strong>Real-life analogy:</strong> A stack of plates. You add to the top and remove from the top. You can't access a plate in the middle without removing those above it.</div>
+    <h3>Core Operations</h3>
+    <ul style="padding-left:20px;line-height:2.4;color:var(--text-secondary)">
+      <li><strong>push(x)</strong> – Add element x to the top</li>
+      <li><strong>pop()</strong> – Remove and return the top element</li>
+      <li><strong>peek()/top()</strong> – View the top element without removing</li>
+      <li><strong>isEmpty()</strong> – Check if stack is empty</li>
+    </ul>
+    <h3 style="margin-top:16px">Applications</h3>
+    <div style="display:flex;flex-wrap:wrap;gap:8px;margin-top:8px">
+      ${['Undo/Redo','Browser history','Function call stack','Expression evaluation','Balanced parentheses','DFS','Infix to Postfix'].map(a=>`<span class="tag tag-purple">${a}</span>`).join('')}
+    </div>
+  </div>
+  <div class="card">
+    <h3>📝 Stack Implementation</h3>
+    ${codeBlock({
+      'C++': `<span class="kw">#include</span> <span class="str">&lt;stack&gt;</span>
+<span class="kw">using namespace</span> std;
+
+<span class="kw">int</span> <span class="fn">main</span>() {
+    stack&lt;<span class="kw">int</span>&gt; s;
+    s.<span class="fn">push</span>(<span class="num">10</span>);  <span class="cm">// O(1)</span>
+    s.<span class="fn">push</span>(<span class="num">20</span>);
+    s.<span class="fn">push</span>(<span class="num">30</span>);
+    cout &lt;&lt; s.<span class="fn">top</span>() &lt;&lt; <span class="str">"\\n"</span>; <span class="cm">// 30</span>
+    s.<span class="fn">pop</span>();              <span class="cm">// Remove 30, O(1)</span>
+    cout &lt;&lt; s.<span class="fn">size</span>();     <span class="cm">// 2</span>
+}
+
+<span class="cm">// Balanced Parentheses</span>
+<span class="kw">bool</span> <span class="fn">isBalanced</span>(string s) {
+    stack&lt;<span class="kw">char</span>&gt; st;
+    <span class="kw">for</span> (<span class="kw">char</span> c : s) {
+        <span class="kw">if</span> (c==<span class="str">'('</span>||c==<span class="str">'['</span>||c==<span class="str">'{'</span>) st.<span class="fn">push</span>(c);
+        <span class="kw">else</span> {
+            <span class="kw">if</span> (st.<span class="fn">empty</span>()) <span class="kw">return false</span>;
+            <span class="kw">char</span> top = st.<span class="fn">top</span>(); st.<span class="fn">pop</span>();
+            <span class="kw">if</span>((c==<span class="str">')'</span>&&top!=<span class="str">'('</span>)||(c==<span class="str">']'</span>&&top!=<span class="str">'['</span>)) <span class="kw">return false</span>;
+        }
+    }
+    <span class="kw">return</span> st.<span class="fn">empty</span>();
+}`,
+      'Python': `<span class="cm"># Stack using list in Python</span>
+stack = []
+stack.<span class="fn">append</span>(<span class="num">10</span>)   <span class="cm"># push O(1)</span>
+stack.<span class="fn">append</span>(<span class="num">20</span>)
+stack.<span class="fn">append</span>(<span class="num">30</span>)
+<span class="fn">print</span>(stack[-<span class="num">1</span>])    <span class="cm"># peek: 30</span>
+stack.<span class="fn">pop</span>()         <span class="cm"># pop O(1): removes 30</span>
+
+<span class="cm"># Balanced brackets checker</span>
+<span class="kw">def</span> <span class="fn">is_balanced</span>(s):
+    stack, match = [], {<span class="str">')'</span>:<span class="str">'('</span>, <span class="str">']'</span>:<span class="str">'['</span>, <span class="str">'}'</span>:<span class="str">'{'</span>}
+    <span class="kw">for</span> c <span class="kw">in</span> s:
+        <span class="kw">if</span> c <span class="kw">in</span> <span class="str">'([{'</span>:
+            stack.<span class="fn">append</span>(c)
+        <span class="kw">elif</span> c <span class="kw">in</span> match:
+            <span class="kw">if not</span> stack <span class="kw">or</span> stack[-<span class="num">1</span>] != match[c]:
+                <span class="kw">return False</span>
+            stack.<span class="fn">pop</span>()
+    <span class="kw">return not</span> stack`,
+      'Java': `<span class="kw">import</span> java.util.Stack;
+Stack&lt;Integer&gt; s = <span class="kw">new</span> Stack&lt;&gt;();
+s.<span class="fn">push</span>(<span class="num">10</span>);
+s.<span class="fn">push</span>(<span class="num">20</span>);
+System.out.<span class="fn">println</span>(s.<span class="fn">peek</span>()); <span class="cm">// 20</span>
+s.<span class="fn">pop</span>();
+System.out.<span class="fn">println</span>(s.<span class="fn">isEmpty</span>()); <span class="cm">// false</span>`
+    })}
+  </div>
+  </div>`,
+  complexity: `
+  <table class="complexity-table">
+    <tr><th>Operation</th><th>Time</th><th>Space</th></tr>
+    <tr><td>push</td><td class="tc-green">O(1)</td><td class="tc-green">O(1)</td></tr>
+    <tr><td>pop</td><td class="tc-green">O(1)</td><td class="tc-green">O(1)</td></tr>
+    <tr><td>peek/top</td><td class="tc-green">O(1)</td><td class="tc-green">O(1)</td></tr>
+    <tr><td>isEmpty</td><td class="tc-green">O(1)</td><td class="tc-green">O(1)</td></tr>
+    <tr><td>Search</td><td class="tc-orange">O(n)</td><td class="tc-green">O(1)</td></tr>
+    <tr><td>Space (total)</td><td>—</td><td class="tc-orange">O(n)</td></tr>
+  </table>`,
+  interview: [
+    'Implement a stack using two queues.',
+    'Design a MinStack that supports getMin() in O(1).',
+    'Evaluate a postfix expression using a stack.',
+    'Find next greater element for each array element.',
+    'Implement browser forward/back navigation using stacks.',
+  ],
+  visualizer: `
+  <div class="viz-container">
+    <div class="viz-header"><h3>📚 Stack Visualizer</h3></div>
+    <div class="viz-controls">
+      <input type="number" id="stackVal" class="viz-input" placeholder="Value" value="42" />
+      <button class="btn-sm btn-green" onclick="stackPush()">Push ↑</button>
+      <button class="btn-sm btn-red" onclick="stackPop()">Pop ↓</button>
+      <button class="btn-sm btn-blue" onclick="stackPeek()">Peek 👁</button>
+    </div>
+    <canvas id="stackCanvas" class="viz-canvas" height="300"></canvas>
+    <div class="viz-log" id="stackLog">← Push elements to build the stack</div>
+  </div>`
+};
+
+// ---------- LINKED LIST ----------
+TOPIC_CONTENT.linkedlist = {
+  title: 'Linked List',
+  learn: `
+  <div class="content-area">
+  <div class="card">
+    <h2>🔗 Linked List</h2>
+    <p>A <strong>Linked List</strong> is a linear data structure where elements (nodes) are stored in non-contiguous memory locations. Each node contains <strong>data</strong> and a <strong>pointer</strong> to the next node.</p>
+    <div class="callout info">📌 <strong>Types:</strong> Singly Linked List · Doubly Linked List · Circular Linked List</div>
+    <div class="callout tip">💡 <strong>Real-life analogy:</strong> A treasure hunt — each clue (node) tells you where to find the next clue (pointer). You must follow the chain from the start.</div>
+  </div>
+  <div class="card">
+    <h3>📝 Linked List Code</h3>
+    ${codeBlock({
+      'C++': `<span class="kw">struct</span> <span class="tp">Node</span> {
+    <span class="kw">int</span> data;
+    <span class="tp">Node</span>* next;
+    <span class="tp">Node</span>(<span class="kw">int</span> d) : data(d), next(<span class="kw">nullptr</span>) {}
+};
+
+<span class="kw">class</span> <span class="tp">LinkedList</span> {
+    <span class="tp">Node</span>* head = <span class="kw">nullptr</span>;
+<span class="kw">public</span>:
+    <span class="cm">// Insert at head – O(1)</span>
+    <span class="kw">void</span> <span class="fn">insertFront</span>(<span class="kw">int</span> data) {
+        <span class="tp">Node</span>* node = <span class="kw">new</span> <span class="tp">Node</span>(data);
+        node->next = head;
+        head = node;
+    }
+    <span class="cm">// Reverse – O(n)</span>
+    <span class="kw">void</span> <span class="fn">reverse</span>() {
+        <span class="tp">Node</span> *prev=<span class="kw">nullptr</span>, *curr=head, *nxt;
+        <span class="kw">while</span> (curr) {
+            nxt = curr->next;
+            curr->next = prev;
+            prev = curr; curr = nxt;
+        }
+        head = prev;
+    }
+    <span class="cm">// Detect cycle – Floyd's algorithm O(n)</span>
+    <span class="kw">bool</span> <span class="fn">hasCycle</span>() {
+        <span class="tp">Node</span> *slow=head, *fast=head;
+        <span class="kw">while</span> (fast &amp;&amp; fast->next) {
+            slow = slow->next;
+            fast = fast->next->next;
+            <span class="kw">if</span> (slow == fast) <span class="kw">return true</span>;
+        }
+        <span class="kw">return false</span>;
+    }
+};`,
+      'Python': `<span class="kw">class</span> <span class="tp">Node</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self, data):
+        self.data = data
+        self.next = <span class="kw">None</span>
+
+<span class="kw">class</span> <span class="tp">LinkedList</span>:
+    <span class="kw">def</span> <span class="fn">__init__</span>(self):
+        self.head = <span class="kw">None</span>
+
+    <span class="kw">def</span> <span class="fn">insert_front</span>(self, data):  <span class="cm"># O(1)</span>
+        node = <span class="tp">Node</span>(data)
+        node.next = self.head
+        self.head = node
+
+    <span class="kw">def</span> <span class="fn">reverse</span>(self):  <span class="cm"># O(n)</span>
+        prev, curr = <span class="kw">None</span>, self.head
+        <span class="kw">while</span> curr:
+            nxt = curr.next
+            curr.next = prev
+            prev, curr = curr, nxt
+        self.head = prev
+
+    <span class="kw">def</span> <span class="fn">has_cycle</span>(self):  <span class="cm"># Floyd's O(n)</span>
+        slow = fast = self.head
+        <span class="kw">while</span> fast <span class="kw">and</span> fast.next:
+            slow = slow.next
+            fast = fast.next.next
+            <span class="kw">if</span> slow <span class="kw">is</span> fast:
+                <span class="kw">return True</span>
+        <span class="kw">return False</span>`,
+      'Java': `<span class="kw">class</span> <span class="tp">Node</span> {
+    <span class="kw">int</span> data; <span class="tp">Node</span> next;
+    <span class="tp">Node</span>(<span class="kw">int</span> d) { data = d; }
+}
+<span class="cm">// Reverse Linked List</span>
+<span class="tp">Node</span> <span class="fn">reverse</span>(<span class="tp">Node</span> head) {
+    <span class="tp">Node</span> prev = <span class="kw">null</span>, curr = head;
+    <span class="kw">while</span> (curr != <span class="kw">null</span>) {
+        <span class="tp">Node</span> nxt = curr.next;
+        curr.next = prev;
+        prev = curr; curr = nxt;
+    }
+    <span class="kw">return</span> prev;
+}`
+    })}
+  </div>
+  </div>`,
+  complexity: `
+  <table class="complexity-table">
+    <tr><th>Operation</th><th>Singly LL</th><th>Doubly LL</th></tr>
+    <tr><td>Access (index)</td><td class="tc-orange">O(n)</td><td class="tc-orange">O(n)</td></tr>
+    <tr><td>Search</td><td class="tc-orange">O(n)</td><td class="tc-orange">O(n)</td></tr>
+    <tr><td>Insert (head)</td><td class="tc-green">O(1)</td><td class="tc-green">O(1)</td></tr>
+    <tr><td>Insert (tail)</td><td class="tc-green">O(1)*</td><td class="tc-green">O(1)</td></tr>
+    <tr><td>Insert (middle)</td><td class="tc-orange">O(n)</td><td class="tc-orange">O(n)</td></tr>
+    <tr><td>Delete (head)</td><td class="tc-green">O(1)</td><td class="tc-green">O(1)</td></tr>
+    <tr><td>Space</td><td class="tc-orange">O(n)</td><td class="tc-orange">O(n)</td></tr>
+  </table>
+  <p style="margin-top:8px;font-size:.8rem;color:var(--text-muted)">* with tail pointer</p>`,
+  interview: [
+    'Reverse a linked list iteratively and recursively.',
+    'Detect and find the start of a cycle (Floyd\'s algorithm).',
+    'Find the middle node in one pass.',
+    'Merge two sorted linked lists.',
+    'Remove the Nth node from the end in one pass.',
+    'Check if linked list is a palindrome.',
+  ],
+  visualizer: `
+  <div class="viz-container">
+    <div class="viz-header"><h3>🔗 Linked List Visualizer</h3></div>
+    <div class="viz-controls">
+      <input type="number" id="llVal" class="viz-input" placeholder="Value" value="10" />
+      <button class="btn-sm btn-green" onclick="llInsertHead()">Insert Head</button>
+      <button class="btn-sm btn-blue" onclick="llInsertTail()">Insert Tail</button>
+      <button class="btn-sm btn-red" onclick="llDeleteHead()">Delete Head</button>
+      <button class="btn-sm btn-orange" onclick="llReverse()">↔ Reverse</button>
+    </div>
+    <canvas id="llCanvas" class="viz-canvas" height="120"></canvas>
+    <div class="viz-log" id="llLog">← Build a linked list using the controls above</div>
+  </div>`
+};
+
+// --- Generic content for remaining topics ---
+function genericContent(title, icon, desc, features) {
+  return {
+    title, learn: `
+  <div class="content-area">
+  <div class="card">
+    <h2>${icon} ${title}</h2>
+    <p>${desc}</p>
+    <div class="callout tip">💡 Study this topic interactively in the <strong>Visualize</strong> tab!</div>
+    <h3>Key Concepts</h3>
+    <ul style="padding-left:20px;line-height:2.4;color:var(--text-secondary)">
+      ${features.map(f=>`<li>${f}</li>`).join('')}
+    </ul>
+  </div>
+  </div>`,
+    complexity: `<p style="color:var(--text-muted)">See the Visualize tab for interactive complexity demonstration.</p>`,
+    interview: ['Describe the data structure in your own words.','What are its real-world applications?','Compare it to similar structures.','Implement the core operations from scratch.'],
+    visualizer: `<div class="viz-container" style="padding:40px;text-align:center"><p style="color:var(--text-muted)">🎨 Visual for <strong>${title}</strong> — interact with the controls!</p><canvas id="${title.replace(/\s/g,'').toLowerCase()}Canvas" class="viz-canvas" height="300" style="margin-top:20px"></canvas></div>`
+  };
+}
+
+TOPIC_CONTENT.queue = genericContent('Queue','🎫',
+  'A Queue follows FIFO (First In First Out). The first element enqueued is the first to be dequeued. Used in BFS, task scheduling, and buffering.',
+  ['enqueue(x) – add to rear O(1)','dequeue() – remove from front O(1)','Variants: Deque, Priority Queue, Circular Queue','Applications: BFS, OS scheduling, print queue']);
+
+TOPIC_CONTENT.tree = genericContent('Binary Tree','🌳',
+  'A tree is a hierarchical structure with a root node and subtrees of children. A binary tree has at most 2 children per node.',
+  ['Traversals: Inorder, Preorder, Postorder, Level-order','Complete, Full, Perfect, Balanced binary trees','Height, Depth, Diameter concepts','BFS uses Queue; DFS uses Stack/Recursion']);
+
+TOPIC_CONTENT.bst = genericContent('Binary Search Tree','🔍',
+  'BST is a binary tree where left subtree has smaller values and right has larger values, enabling fast O(log n) search.',
+  ['Search, Insert, Delete in O(log n) avg','Inorder traversal gives sorted output','AVL & Red-Black Trees maintain balance','Common operations: floor, ceil, kth smallest']);
+
+TOPIC_CONTENT.graph = genericContent('Graph','🕸️',
+  'A graph is a collection of vertices (nodes) connected by edges. Can be directed/undirected, weighted/unweighted.',
+  ['Representations: Adjacency List, Adjacency Matrix','BFS: shortest path in unweighted graph','DFS: cycle detection, topological sort','Dijkstra, Bellman-Ford for weighted shortest paths','MST: Kruskal, Prim algorithms']);
+
+TOPIC_CONTENT.heap = genericContent('Heap / Priority Queue','⛰️',
+  'A Heap is a complete binary tree that satisfies the heap property. Max-Heap: parent ≥ children. Min-Heap: parent ≤ children.',
+  ['Insert: O(log n), Extract-Max/Min: O(log n)','Build heap from array: O(n)','Used in Heap Sort, Dijkstra, K-th largest','Priority Queue is an ADT backed by a heap']);
+
+TOPIC_CONTENT.searching = genericContent('Searching Algorithms','🔭',
+  'Searching algorithms find a specific element in a data structure. Linear Search works on unsorted data; Binary Search on sorted arrays.',
+  ['Linear Search: O(n) – checks every element','Binary Search: O(log n) – divide and conquer','Binary Search requires sorted array','BFS/DFS for searching in graphs and trees']);
+
+TOPIC_CONTENT.dp = genericContent('Dynamic Programming','🧩',
+  'DP solves complex problems by breaking them into overlapping subproblems and storing results. Two approaches: Top-down (memoization) and Bottom-up (tabulation).',
+  ['Optimal substructure + overlapping subproblems','Memoization: recursive + cache','Tabulation: iterative + DP table','Classic problems: Fibonacci, LCS, Knapsack, Coin Change, Edit Distance']);
+
+TOPIC_CONTENT.recursion = genericContent('Recursion','🔄',
+  'Recursion solves a problem by calling the same function with a smaller input. Every recursion has a base case (stop condition) and recursive case.',
+  ['Base case stops infinite recursion','Call stack stores each recursive call','Tail recursion can be optimized','Tree recursion: branching calls (e.g., Fibonacci)','Power Set, Permutations, N-Queens use recursion']);
+
+// ============================================================
+//  VISUALIZERS (Canvas-based)
+// ============================================================
+
+// --- Array Visualizer ---
+let arrayData = [45, 12, 67, 23, 89, 34, 56, 78];
+let arrayHighlight = {};
+
+function initViz(id) {
+  if (id === 'array') drawArray();
+  if (id === 'sorting') { initSortData(); drawSort(); }
+  if (id === 'stack') drawStack();
+  if (id === 'linkedlist') drawLL();
+}
+
+function drawArray() {
+  const canvas = document.getElementById('arrayCanvas');
+  if (!canvas) return;
+  const ctx = canvas.getContext('2d');
+  canvas.width = canvas.offsetWidth;
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  const n = arrayData.length;
+  const boxW = Math.min(70, (W - 40) / n);
+  const startX = (W - boxW * n) / 2;
+  const boxH = 60, y = (H - boxH) / 2;
+  const theme = document.documentElement.getAttribute('data-theme');
+  const borderColor = theme === 'dark' ? '#2a2d45' : '#e0e4f5';
+  const textColor = theme === 'dark' ? '#e8eaf6' : '#1a1d2e';
+  const mutedColor = theme === 'dark' ? '#5c6080' : '#9ea3b8';
+
+  arrayData.forEach((val, i) => {
+    const x = startX + i * boxW;
+    const h = arrayHighlight[i];
+    // Box
+    ctx.beginPath();
+    ctx.roundRect(x + 2, y, boxW - 4, boxH, 6);
+    ctx.fillStyle = h === 'active' ? 'rgba(108,99,255,0.4)' :
+                    h === 'found' ? 'rgba(0,214,143,0.4)' :
+                    h === 'swap' ? 'rgba(255,159,67,0.4)' :
+                    (theme === 'dark' ? 'rgba(30,34,53,0.9)' : '#f0f2ff');
+    ctx.fill();
+    ctx.strokeStyle = h ? (h==='active'?'#6c63ff': h==='found'?'#00d68f':'#ff9f43') : borderColor;
+    ctx.lineWidth = h ? 2 : 1;
+    ctx.stroke();
+    // Value
+    ctx.fillStyle = textColor;
+    ctx.font = 'bold 14px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText(val, x + boxW / 2, y + boxH / 2 + 5);
+    // Index
+    ctx.fillStyle = mutedColor;
+    ctx.font = '11px Segoe UI';
+    ctx.fillText(i, x + boxW / 2, y + boxH + 18);
+  });
+}
+
+function arrayInsert() {
+  const val = parseInt(document.getElementById('arrayVal').value) || 0;
+  const idx = parseInt(document.getElementById('arrayIdx').value) || 0;
+  arrayData.splice(Math.min(idx, arrayData.length), 0, val);
+  if (arrayData.length > 12) arrayData.shift();
+  arrayHighlight = { [idx]: 'active' };
+  drawArray();
+  setTimeout(() => { arrayHighlight = {}; drawArray(); }, 1000);
+  document.getElementById('arrayLog').textContent = `✅ Inserted ${val} at index ${idx}`;
+}
+
+function arrayDelete() {
+  const idx = parseInt(document.getElementById('arrayIdx').value) || 0;
+  if (idx < arrayData.length) {
+    const val = arrayData[idx];
+    arrayHighlight = { [idx]: 'swap' };
+    drawArray();
+    setTimeout(() => {
+      arrayData.splice(idx, 1);
+      arrayHighlight = {};
+      drawArray();
+      document.getElementById('arrayLog').textContent = `🗑 Deleted ${val} from index ${idx}`;
+    }, 500);
+  }
+}
+
+function arraySearch() {
+  const val = parseInt(document.getElementById('arrayVal').value) || 0;
+  let i = 0;
+  const step = () => {
+    arrayHighlight = {};
+    if (i >= arrayData.length) {
+      document.getElementById('arrayLog').textContent = `❌ ${val} not found in array`;
+      drawArray(); return;
+    }
+    arrayHighlight[i] = 'active';
+    drawArray();
+    if (arrayData[i] === val) {
+      arrayHighlight[i] = 'found';
+      drawArray();
+      document.getElementById('arrayLog').textContent = `✅ Found ${val} at index ${i}!`;
+      return;
+    }
+    document.getElementById('arrayLog').textContent = `🔍 Checking index ${i}: ${arrayData[i]} ≠ ${val}`;
+    i++;
+    setTimeout(step, state.animSpeed * 0.6);
+  };
+  step();
+}
+
+async function arraySortViz() {
+  const arr = [...arrayData];
+  const delay = ms => new Promise(r => setTimeout(r, ms));
+  for (let i = 0; i < arr.length - 1; i++) {
+    for (let j = 0; j < arr.length - i - 1; j++) {
+      arrayHighlight = { [j]: 'active', [j+1]: 'active' };
+      drawArray();
+      if (arr[j] > arr[j+1]) {
+        [arr[j], arr[j+1]] = [arr[j+1], arr[j]];
+        arrayHighlight = { [j]: 'swap', [j+1]: 'swap' };
+        arrayData = [...arr];
+        drawArray();
+        document.getElementById('arrayLog').textContent = `🔄 Swapped index ${j} and ${j+1}`;
+      }
+      await delay(state.animSpeed * 0.5);
+    }
+  }
+  arrayHighlight = {};
+  arrayData = arr;
+  drawArray();
+  document.getElementById('arrayLog').textContent = '✅ Array sorted!';
+}
+
+// --- Sorting Visualizer ---
+let sortData = [];
+let sortColors = [];
+
+function initSortData() {
+  sortData = Array.from({length:30}, () => Math.floor(Math.random()*180)+20);
+  sortColors = new Array(30).fill('#6c63ff');
+}
+
+function shuffleSort() {
+  initSortData();
+  drawSort();
+  document.getElementById('sortLog').textContent = '🔀 Array shuffled — press ▶ to sort';
+}
+
+function resetSort() {
+  sortData = Array.from({length:30},(_,i)=>(i+1)*6);
+  sortColors = new Array(30).fill('#6c63ff');
+  drawSort();
+  document.getElementById('sortLog').textContent = '↺ Reset to sorted array';
+}
+
+function drawSort() {
+  const canvas = document.getElementById('sortCanvas');
+  if (!canvas) return;
+  canvas.width = canvas.offsetWidth;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  const n = sortData.length;
+  const bw = W / n;
+  sortData.forEach((v, i) => {
+    const h = (v / 200) * (H - 20);
+    ctx.fillStyle = sortColors[i] || '#6c63ff';
+    ctx.fillRect(i * bw + 1, H - h, bw - 2, h);
+  });
+}
+
+async function startSort() {
+  if (state.vizAnimating) return;
+  state.vizAnimating = true;
+  const algo = document.getElementById('sortAlgo').value;
+  const delay = ms => new Promise(r => setTimeout(r, ms));
+  const d = [...sortData];
+  const log = document.getElementById('sortLog');
+
+  if (algo === 'bubble') {
+    log.textContent = '🫧 Bubble Sort started…';
+    for (let i = 0; i < d.length - 1; i++) {
+      for (let j = 0; j < d.length - i - 1; j++) {
+        sortColors = d.map((_,k) => k===j||k===j+1?'#ff9f43':'#6c63ff');
+        sortData = [...d]; drawSort();
+        if (d[j] > d[j+1]) {
+          [d[j], d[j+1]] = [d[j+1], d[j]];
+          sortColors[j] = sortColors[j+1] = '#00d68f';
+          sortData = [...d]; drawSort();
+          log.textContent = `🫧 Bubble: comparing index ${j} & ${j+1}`;
+        }
+        await delay(state.animSpeed * 0.2);
+      }
+      sortColors[d.length - 1 - i] = '#4fc3f7';
+    }
+  } else if (algo === 'selection') {
+    log.textContent = '🎯 Selection Sort started…';
+    for (let i = 0; i < d.length; i++) {
+      let minI = i;
+      for (let j = i+1; j < d.length; j++) {
+        sortColors = d.map((_,k) => k===minI?'#ff6b6b': k===j?'#ff9f43': k<i?'#4fc3f7':'#6c63ff');
+        sortData = [...d]; drawSort();
+        if (d[j] < d[minI]) minI = j;
+        await delay(state.animSpeed * 0.15);
+      }
+      [d[i], d[minI]] = [d[minI], d[i]];
+      sortColors[i] = '#00d68f';
+      sortData = [...d]; drawSort();
+      log.textContent = `🎯 Selection: placed ${d[i]} at index ${i}`;
+      await delay(state.animSpeed * 0.3);
+    }
+  } else if (algo === 'insertion') {
+    log.textContent = '🃏 Insertion Sort started…';
+    for (let i = 1; i < d.length; i++) {
+      let key = d[i], j = i - 1;
+      sortColors = d.map((_,k) => k===i?'#ff9f43':'#6c63ff');
+      sortData = [...d]; drawSort();
+      while (j >= 0 && d[j] > key) {
+        d[j+1] = d[j]; j--;
+        sortColors = d.map((_,k) => k<=i?'#00d68f':k===j+1?'#ff9f43':'#6c63ff');
+        sortData = [...d]; drawSort();
+        await delay(state.animSpeed * 0.2);
+      }
+      d[j+1] = key;
+      sortData = [...d]; drawSort();
+      log.textContent = `🃏 Insertion: placed ${key} at index ${j+1}`;
+      await delay(state.animSpeed * 0.3);
+    }
+  } else { // merge
+    log.textContent = '🔀 Merge Sort started…';
+    async function mergeSortViz(arr, start) {
+      if (arr.length <= 1) return arr;
+      const mid = Math.floor(arr.length / 2);
+      const left = await mergeSortViz(arr.slice(0, mid), start);
+      const right = await mergeSortViz(arr.slice(mid), start + mid);
+      const merged = [];
+      let i = 0, j = 0;
+      while (i < left.length && j < right.length) {
+        sortColors[start + merged.length] = '#ff9f43';
+        sortData = [...d.slice(0,start), ...left, ...right, ...d.slice(start+arr.length)];
+        drawSort();
+        await delay(state.animSpeed * 0.15);
+        if (left[i] <= right[j]) merged.push(left[i++]);
+        else merged.push(right[j++]);
+      }
+      return [...merged, ...left.slice(i), ...right.slice(j)];
+    }
+    const sorted = await mergeSortViz([...d], 0);
+    sortData = sorted; sortColors = new Array(sorted.length).fill('#00d68f');
+    drawSort();
+    log.textContent = '✅ Merge Sort complete!';
+    state.vizAnimating = false; return;
+  }
+
+  sortColors = new Array(d.length).fill('#00d68f');
+  sortData = [...d]; drawSort();
+  log.textContent = '✅ Sorting complete!';
+  state.vizAnimating = false;
+}
+
+// --- Stack Visualizer ---
+let stackData = [];
+
+function drawStack() {
+  const canvas = document.getElementById('stackCanvas');
+  if (!canvas) return;
+  canvas.width = canvas.offsetWidth;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  const theme = document.documentElement.getAttribute('data-theme');
+  const bW = 120, bH = 44, x = (W - bW) / 2;
+  const maxVisible = 5;
+  const items = stackData.slice(-maxVisible);
+  items.forEach((val, i) => {
+    const isTop = i === items.length - 1;
+    const y = H - 60 - i * (bH + 6);
+    ctx.beginPath();
+    ctx.roundRect(x, y, bW, bH, 6);
+    ctx.fillStyle = isTop ? 'rgba(108,99,255,0.5)' : (theme==='dark'?'rgba(30,34,53,0.9)':'#f0f2ff');
+    ctx.fill();
+    ctx.strokeStyle = isTop ? '#6c63ff' : (theme==='dark'?'#2a2d45':'#e0e4f5');
+    ctx.lineWidth = isTop ? 2 : 1;
+    ctx.stroke();
+    ctx.fillStyle = theme==='dark'?'#e8eaf6':'#1a1d2e';
+    ctx.font = 'bold 15px Segoe UI';
+    ctx.textAlign = 'center';
+    ctx.fillText(val, x + bW/2, y + bH/2 + 5);
+    if (isTop) {
+      ctx.fillStyle = '#6c63ff';
+      ctx.font = '11px Segoe UI';
+      ctx.fillText('← TOP', x + bW + 10, y + bH/2 + 4);
+    }
+  });
+  // Base
+  ctx.beginPath();
+  ctx.moveTo(x - 10, H - 40); ctx.lineTo(x + bW + 10, H - 40);
+  ctx.strokeStyle = theme==='dark'?'#5c6080':'#9ea3b8';
+  ctx.lineWidth = 2; ctx.stroke();
+  if (stackData.length === 0) {
+    ctx.fillStyle = theme==='dark'?'#5c6080':'#9ea3b8';
+    ctx.font = '14px Segoe UI'; ctx.textAlign = 'center';
+    ctx.fillText('Stack is empty', W/2, H/2);
+  }
+}
+
+function stackPush() {
+  const val = parseInt(document.getElementById('stackVal').value) || 0;
+  stackData.push(val);
+  drawStack();
+  document.getElementById('stackLog').textContent = `↑ Pushed ${val} onto stack. Size: ${stackData.length}`;
+}
+function stackPop() {
+  if (!stackData.length) { document.getElementById('stackLog').textContent = '❌ Stack Underflow!'; return; }
+  const val = stackData.pop();
+  drawStack();
+  document.getElementById('stackLog').textContent = `↓ Popped ${val}. Size: ${stackData.length}`;
+}
+function stackPeek() {
+  if (!stackData.length) { document.getElementById('stackLog').textContent = '❌ Stack is empty!'; return; }
+  document.getElementById('stackLog').textContent = `👁 Peek: ${stackData[stackData.length-1]} (top element)`;
+}
+
+// --- Linked List Visualizer ---
+let llData = [];
+
+function drawLL() {
+  const canvas = document.getElementById('llCanvas');
+  if (!canvas) return;
+  canvas.width = canvas.offsetWidth;
+  const ctx = canvas.getContext('2d');
+  const W = canvas.width, H = canvas.height;
+  ctx.clearRect(0, 0, W, H);
+  const theme = document.documentElement.getAttribute('data-theme');
+  if (!llData.length) {
+    ctx.fillStyle = theme==='dark'?'#5c6080':'#9ea3b8';
+    ctx.font = '14px Segoe UI'; ctx.textAlign = 'center';
+    ctx.fillText('List is empty – add nodes!', W/2, H/2);
+    return;
+  }
+  const nW = 64, nH = 44, gap = 20;
+  const total = llData.length * (nW + gap) - gap;
+  let x = (W - total) / 2;
+  const y = (H - nH) / 2;
+  llData.forEach((val, i) => {
+    // Data part
+    ctx.beginPath();
+    ctx.roundRect(x, y, nW * 0.6, nH, 4);
+    ctx.fillStyle = i===0?'rgba(108,99,255,0.4)':(theme==='dark'?'rgba(30,34,53,0.9)':'#f0f2ff');
+    ctx.fill();
+    ctx.strokeStyle = i===0?'#6c63ff':(theme==='dark'?'#2a2d45':'#e0e4f5');
+    ctx.lineWidth=1.5; ctx.stroke();
+    ctx.fillStyle = theme==='dark'?'#e8eaf6':'#1a1d2e';
+    ctx.font = 'bold 13px Segoe UI'; ctx.textAlign = 'center';
+    ctx.fillText(val, x + nW*0.3, y + nH/2 + 5);
+    // Pointer part
+    ctx.beginPath();
+    ctx.roundRect(x + nW*0.6, y, nW*0.4, nH, [0,4,4,0]);
+    ctx.fillStyle = theme==='dark'?'rgba(92,96,128,0.3)':'rgba(200,200,220,0.5)';
+    ctx.fill();
+    ctx.strokeStyle = theme==='dark'?'#2a2d45':'#e0e4f5';
+    ctx.stroke();
+    if (i < llData.length - 1) {
+      // Arrow
+      const ax = x + nW + 2;
+      ctx.beginPath();
+      ctx.moveTo(ax, y + nH/2);
+      ctx.lineTo(ax + gap - 4, y + nH/2);
+      ctx.strokeStyle = '#6c63ff'; ctx.lineWidth = 2; ctx.stroke();
+      ctx.beginPath();
+      ctx.moveTo(ax + gap - 4, y + nH/2 - 5);
+      ctx.lineTo(ax + gap, y + nH/2);
+      ctx.lineTo(ax + gap - 4, y + nH/2 + 5);
+      ctx.fillStyle = '#6c63ff'; ctx.fill();
+    } else {
+      ctx.fillStyle = theme==='dark'?'#5c6080':'#9ea3b8';
+      ctx.font = '10px monospace'; ctx.textAlign = 'center';
+      ctx.fillText('null', x + nW*0.8, y + nH/2 + 4);
+    }
+    x += nW + gap;
+  });
+  // HEAD label
+  if (llData.length) {
+    const sx = (W - total) / 2;
+    ctx.fillStyle = '#6c63ff'; ctx.font = 'bold 11px Segoe UI'; ctx.textAlign = 'center';
+    ctx.fillText('HEAD', sx + nW*0.3, y - 8);
+  }
+}
+
+function llInsertHead() {
+  const val = parseInt(document.getElementById('llVal').value) || 0;
+  llData.unshift(val);
+  drawLL();
+  document.getElementById('llLog').textContent = `✅ Inserted ${val} at head. Size: ${llData.length}`;
+}
+function llInsertTail() {
+  const val = parseInt(document.getElementById('llVal').value) || 0;
+  llData.push(val);
+  drawLL();
+  document.getElementById('llLog').textContent = `✅ Inserted ${val} at tail. Size: ${llData.length}`;
+}
+function llDeleteHead() {
+  if (!llData.length) return;
+  const val = llData.shift();
+  drawLL();
+  document.getElementById('llLog').textContent = `🗑 Deleted head: ${val}. Size: ${llData.length}`;
+}
+function llReverse() {
+  llData.reverse();
+  drawLL();
+  document.getElementById('llLog').textContent = `↔ List reversed!`;
+}
+
+// --- Resize handler ---
+window.addEventListener('resize', () => {
+  if (state.currentTopic) initViz(state.currentTopic);
+});
+
+// Init on load
+initSortData();
+</script>
+</body>
+</html>

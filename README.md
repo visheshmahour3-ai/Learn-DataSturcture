@@ -1,2 +1,2 @@
-# Learn-DataSturcture
+# Learn-DataStructure
 I am very Happy
